@@ -2,8 +2,15 @@ package sampm.uz.library_system.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import sampm.uz.library_system.entity.Student;
+import sampm.uz.library_system.entity.User;
+
+import java.util.Optional;
 
 @Repository
-public interface StudentRepository extends JpaRepository<Student, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findUserByEmail(String email);
+    Optional<User> findUserByIdAndAvailableTrue(Long id);
+
+
 }
