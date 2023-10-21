@@ -22,10 +22,15 @@ public class Book extends BaseLongEntity {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    private boolean available;
+//    private boolean available;
+
+    private int count;
 
 //    private boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Author author;
+
+//    @ManyToOne
+//    private Student student;
 }

@@ -1,5 +1,6 @@
 package sampm.uz.library_system.service;
 
+import sampm.uz.library_system.model.request.BookRequest;
 import sampm.uz.library_system.model.request.StudentRequest;
 import sampm.uz.library_system.model.common.ApiResponse;
 
@@ -12,4 +13,6 @@ public interface StudentService {
 
     ApiResponse updateStudent(StudentRequest request, Long id);
     ApiResponse deleteStudent(Long id);
+
+    ApiResponse getBookToStudent(StudentRequest studentRequest, BookRequest bookRequest);
 }

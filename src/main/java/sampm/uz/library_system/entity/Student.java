@@ -35,7 +35,12 @@ public class Student extends BaseLongEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany
+    @ManyToMany
     private List<Book> books;
+
+    @OneToOne
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
 
 }

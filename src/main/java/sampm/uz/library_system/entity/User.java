@@ -1,9 +1,6 @@
 package sampm.uz.library_system.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import sampm.uz.library_system.enums.SchoolName;
 
@@ -30,5 +27,8 @@ public class User extends BaseLongEntity {
     private String gmailCode;
 
     private boolean available;
+
+    @ManyToOne
+    private Role role;
 
 }

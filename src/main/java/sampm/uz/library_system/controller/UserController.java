@@ -93,11 +93,20 @@ public class UserController {
                 ? ResponseEntity.ok(student)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
     @PutMapping(UPDATE_STUDENT)
     public HttpEntity<ApiResponse> updateStudent(@RequestParam StudentRequest request, @PathVariable Long id) {
         ApiResponse student = userService.updateStudent(request, id);
         return student != null
                 ? ResponseEntity.ok(student)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @PostMapping(BOOK_TO_STUDENT)
+    public HttpEntity<ApiResponse> bookToStudent(@RequestBody BookRequest bookRequest, @RequestBody StudentRequest studentRequest) {
+        ApiResponse bookToStudent = studentService.getBookToStudent(studentRequest, bookRequest);
+        return bookToStudent != null
+                ? ResponseEntity.ok(bookToStudent)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
@@ -143,7 +152,8 @@ public class UserController {
                 ? ResponseEntity.ok(book)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
-    @GetMapping("/getAllDeletedBook")
+
+    @GetMapping(GET_ALL_DELETED_BOOK)
     public HttpEntity<ApiResponse> getAllDeletedBook(@RequestParam(name = "page", defaultValue = "0") int page,
                                                      @RequestParam(name = "size", defaultValue = "9") int size) {
         ApiResponse allDeletedBook = userService.getAllNotAvailableBook(page, size);
@@ -152,7 +162,7 @@ public class UserController {
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @GetMapping("/getAllAvailableBook")
+    @GetMapping(GET_ALL_AVAILABLE_BOOK)
     public HttpEntity<ApiResponse> getAllAvailableBook(@RequestParam(name = "page", defaultValue = "0") int page,
                                                        @RequestParam(name = "size", defaultValue = "9") int size) {
         ApiResponse allDeletedBook = userService.getAllAvailableBook(page, size);
@@ -161,7 +171,7 @@ public class UserController {
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @GetMapping("/getAllNotAvailableBook")
+    @GetMapping(GET_ALL_NOT_AVAILABLE_BOOK)
     public HttpEntity<ApiResponse> getAllNotAvailableBook(@RequestParam(name = "page", defaultValue = "0") int page,
                                                           @RequestParam(name = "size", defaultValue = "9") int size) {
         ApiResponse allDeletedBook = userService.getAllNotAvailableBook(page, size);

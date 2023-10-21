@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sampm.uz.library_system.model.common.ApiResponse;
+import sampm.uz.library_system.model.request.BookRequest;
 import sampm.uz.library_system.service.StudentService;
 import sampm.uz.library_system.service.UserService;
 
@@ -28,6 +29,12 @@ public class StudentController {
         ApiResponse book = userService.getBook(id);
         return ResponseEntity.status(book.isSuccess() ? 200 : 409).body(book);
     }
+    @GetMapping(GET_BOOK)
+    public HttpEntity<ApiResponse> getBookByName(@RequestParam String bookName) {
+        ApiResponse book = userService.getBookByBookName(bookName);
+        return ResponseEntity.status(book.isSuccess() ? 200 : 409).body(book);
+    }
+
 
     @GetMapping(GET_ALL_BOOK)
     public HttpEntity<ApiResponse> getAllBook(@RequestParam(name = "page", defaultValue = "0") int page,

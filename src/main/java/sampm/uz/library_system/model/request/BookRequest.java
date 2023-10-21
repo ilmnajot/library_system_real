@@ -3,6 +3,7 @@ package sampm.uz.library_system.model.request;
 import jakarta.persistence.*;
 import lombok.Data;
 import sampm.uz.library_system.entity.Author;
+import sampm.uz.library_system.entity.Student;
 import sampm.uz.library_system.enums.Category;
 import sampm.uz.library_system.model.response.AuthorResponse;
 
@@ -17,8 +18,12 @@ public class BookRequest {
 
     private Category category;
 
-    private boolean available;
+//    private boolean available;
 
-    private Author author;
+    private Long authorId;
+
+//    private Student student;
+
+    private int count;
 
 }
