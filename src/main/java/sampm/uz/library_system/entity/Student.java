@@ -22,6 +22,8 @@ public class Student extends BaseLongEntity {
 
     private String email;
 
+    private String password;
+
     @Enumerated(EnumType.STRING)
     private StudentClass studentGrade;
 
@@ -30,17 +32,21 @@ public class Student extends BaseLongEntity {
 
     private String gmailCode;
 
-    private boolean available;
+    private boolean graduated = false;
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @ManyToMany
-    private List<Book> books;
-
     @OneToOne
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "student_book",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    private List<Book> books;
 
 
 }

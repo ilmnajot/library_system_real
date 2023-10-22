@@ -53,7 +53,7 @@ public class DataLoader implements CommandLineRunner {
                             .isbn(123456789101112L)
                             .description("roman, hayotga juda katta yordam beradigan kitob")
                             .category(Category.DRAMA)
-                            .available(true)
+                            //.available(true)
                             .author(null)
                             .build());
             Student student = studentRepository.save(
@@ -63,7 +63,7 @@ public class DataLoader implements CommandLineRunner {
                             .email("studentgmail@gmail.com")
                             .studentGrade(StudentClass.BLUE_5)
                             .schoolName(SchoolName.SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI)
-                            .available(true)
+                            .graduated(false)
                             .status(Status.NOT_IN_DEBT)
                             .books(List.of(book))
                             .build());

@@ -154,8 +154,9 @@ public class UserController {
     }
 
     @GetMapping(GET_ALL_DELETED_BOOK)
-    public HttpEntity<ApiResponse> getAllDeletedBook(@RequestParam(name = "page", defaultValue = "0") int page,
-                                                     @RequestParam(name = "size", defaultValue = "9") int size) {
+    public HttpEntity<ApiResponse> getAllDeletedBook(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "9") int size) {
         ApiResponse allDeletedBook = userService.getAllNotAvailableBook(page, size);
         return allDeletedBook != null
                 ? ResponseEntity.ok(allDeletedBook)

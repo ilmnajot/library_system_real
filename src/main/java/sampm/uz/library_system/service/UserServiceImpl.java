@@ -3,9 +3,11 @@ package sampm.uz.library_system.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sampm.uz.library_system.entity.*;
 import sampm.uz.library_system.enums.Status;
+import sampm.uz.library_system.exception.BookException;
 import sampm.uz.library_system.model.common.ApiResponse;
 import sampm.uz.library_system.model.request.BookRequest;
 import sampm.uz.library_system.model.request.StudentRequest;
@@ -17,7 +19,9 @@ import sampm.uz.library_system.repository.BookRepository;
 import sampm.uz.library_system.repository.StudentRepository;
 import sampm.uz.library_system.repository.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.hibernate.cfg.AvailableSettings.USER;
 import static sampm.uz.library_system.enums.Role.STUDENT;
@@ -36,6 +40,7 @@ public class UserServiceImpl implements UserService {
         this.studentRepository = studentRepository;
     }
 
+
     @Override
     public ApiResponse addBook(BookRequest request) {
         Optional<Book> optionalBook = bookRepository.findBookByIsbn(request.getIsbn());
@@ -48,13 +53,13 @@ public class UserServiceImpl implements UserService {
         book.setDescription(request.getDescription());
         book.setCategory(request.getCategory());
 //        book.setAvailable(true);
-        book.setAuthor(
+        /*book.setAuthor(
                 Author
                         .builder()
                         .fullName(request.getAuthor().getFullName())
                         .email(request.getAuthor().getEmail())
                         .city(request.getAuthor().getCity())
-                        .build());
+                        .build());*/
 //        book.setStudent(
 //                Student
 //                        .builder()
@@ -76,27 +81,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse addBookByUserRequest(BookRequest request) {
-        Optional<Book> optionalBook = bookRepository.findBookByIsbn(request.getBookName());
+        Optional<Book> optionalBook = bookRepository.findBookByIsbn(request.getIsbn());
         if (optionalBook.isPresent()) {
             return new ApiResponse("this book has already been added", false, "here is book you wanted to add: " + optionalBook.get());
         }
         Student student = new Student();
         Book book = new Book();
         book.setBookName(student.getFullName());
-        book.setAvailable(true);
+        //book.setAvailable(true);
         return new ApiResponse("this book has been added", false, modelMapper.map(bookRepository.save(book), BookResponse.class));
     }
 
 
     @Override
     public ApiResponse getBook(Long id) {
-        Optional<Book> optionalBook = bookRepository.findBookByIdAndAvailableTrue(id);
+        Book book = getBookById(id);
+        Book savedBook = bookRepository.save(book);
+        BookResponse bookResponse = modelMapper.map(savedBook, BookResponse.class);
+        return new ApiResponse("here is the book you want to get: ", true, bookResponse);
+    }
+    public Book getBookById(Long id) {
+        Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isPresent()) {
-            optionalBook.get().setAvailable(true); //need to ask if really need here setAvailable(true); todo
-            BookResponse bookResponse = modelMapper.map(bookRepository.save(optionalBook.get()), BookResponse.class);
-            return new ApiResponse("here is the book you are looking for: ", true, bookResponse);
+            return optionalBook.get();
         }
-        return new ApiResponse("no such book", false);
+        throw new BookException("there is no book with id: " + id);
     }
 
     @Override
@@ -117,7 +126,7 @@ public class UserServiceImpl implements UserService {
         if (optionalBook.isPresent()) {
             Book book = optionalBook.get();
 //            book.setDeleted(false);
-            book.setAvailable(false);
+//            book.setAvailable(false);
             return new ApiResponse("deleted book", true, modelMapper.map(bookRepository.save(book), BookResponse.class));
         }
         return new ApiResponse("there is no such book", false);
@@ -134,13 +143,13 @@ public class UserServiceImpl implements UserService {
             book.setDescription(request.getDescription());
             book.setCategory(request.getCategory());
 //            book.setAvailable(request.getAuthor();
-            book.setAuthor(
-                    Author
-                            .builder()
-                            .fullName(request.getAuthor().getFullName())
-                            .email(request.getAuthor().getEmail())
-                            .city(request.getAuthor().getCity())
-                            .build());
+//            book.setAuthor(
+//                    Author
+//                            .builder()
+//                            .fullName(request.getAuthor().getFullName())
+//                            .email(request.getAuthor().getEmail())
+//                            .city(request.getAuthor().getCity())
+//                            .build());
             return new ApiResponse("success", true, modelMapper.map(bookRepository.save(book), BookResponse.class));
         }
         return new ApiResponse("there is not available", false);
@@ -148,15 +157,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse getStudent(Long id) {
-        Optional<Student> optionalUser = studentRepository.findStudentByIdAndAvailableTrue(id);
+        Optional<Student> optionalUser = studentRepository.findStudentByIdAndGraduatedFalse(id);
         if (optionalUser.isPresent()) {
             Student student = optionalUser.get();
-            student.setAvailable(true);
+            student.setGraduated(false);
             Student savedStudent = studentRepository.save(student);
             StudentResponse userResponse = modelMapper.map(savedStudent, StudentResponse.class);
             return new ApiResponse("here is the user", true, userResponse);
         }
-        return new ApiResponse("there is not available user", false);
+        throw new BookException("there is not available user");
     }
 
     @Override
@@ -167,29 +176,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse getAllNotAvailableStudent(int page, int size) {
-        Page<Student> students = studentRepository.findAllByAvailableFalse(PageRequest.of(page, size));
+        Page<Student> students = studentRepository.findAllByGraduatedFalse(Sort.by("id"), PageRequest.of(page, size));
         return new ApiResponse("success", true, students.map(student -> modelMapper.map(student, StudentResponse.class)));
     }
 
     @Override
     public ApiResponse deleteStudent(Long id) {
-        Optional<Student> studentOptional = studentRepository.findStudentByIdAndAvailableTrue(id);
+        Optional<Student> studentOptional = studentRepository.findStudentByIdAndGraduatedFalse(id);
         if (studentOptional.isPresent()) {
             if (studentOptional.get().getStatus().equals(Status.NOT_IN_DEBT)) {
                 Student student = studentOptional.get();
-                student.setAvailable(false);
+                studentRepository.deleteById(id);
                 Student savedStudent = studentRepository.save(student);
                 StudentResponse studentResponse = modelMapper.map(savedStudent, StudentResponse.class);
                 return new ApiResponse("success", true, studentResponse);
             }
-            return new ApiResponse("this student has to return the books he or she took back", false);
+            throw new BookException("this student has to return the books he or she took back");
         }
-        return new ApiResponse("there is no student with this id: " + id, false);
+        throw new BookException("there is no student with this id: " + id);
     }
 
     @Override
     public ApiResponse updateStudent(StudentRequest request, Long id) {
-        Optional<Student> studentOptional = studentRepository.findStudentByIdAndAvailableTrue(id);
+        Optional<Student> studentOptional = studentRepository.findStudentByEmailAndGraduatedFalse(id);
         if (studentOptional.isPresent()) {
             Student student = studentOptional.get();
             student.setFullName(request.getFullName());
@@ -239,9 +248,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse addStudent(StudentRequest request) {
-        Optional<Student> optionalStudent = studentRepository.findStudentByEmailAndAvailableTrue(request.getEmail());
+        Optional<Student> optionalStudent = studentRepository.findStudentByEmailAndGraduatedFalse(request.getEmail());
         if (optionalStudent.isPresent()) {
-            return new ApiResponse("student with email " + optionalStudent.get().getEmail() + " is already available", false, optionalStudent.get());
+            throw new BookException("student with email " + optionalStudent.get().getEmail() + " is already available");
         }
         Student student = new Student();
         student.setFullName(request.getFullName());
@@ -250,9 +259,16 @@ public class UserServiceImpl implements UserService {
         student.setSchoolName(request.getSchoolName());
         student.setStatus(request.getStatus());
         student.setRole(Role.builder().name(STUDENT.name()).build());
-        student.setAvailable(true);
+        student.setGraduated(false);
         Student savedStudent = studentRepository.save(student);
         StudentResponse studentResponse = modelMapper.map(savedStudent, StudentResponse.class);
         return new ApiResponse("success", true, studentResponse);
+    }
+
+    @Override
+    public ApiResponse getBookByBookName(String bookName) {
+        List<Book> bookList = bookRepository.findBookByBookName(bookName);
+        Stream<BookResponse> responseStream = bookList.stream().map(book -> modelMapper.map(book, BookResponse.class));
+        return new ApiResponse("success", true, responseStream);
     }
 }

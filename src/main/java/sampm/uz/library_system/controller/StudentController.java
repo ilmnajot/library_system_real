@@ -29,7 +29,7 @@ public class StudentController {
         ApiResponse book = userService.getBook(id);
         return ResponseEntity.status(book.isSuccess() ? 200 : 409).body(book);
     }
-    @GetMapping(GET_BOOK)
+    @GetMapping(SEARCH)
     public HttpEntity<ApiResponse> getBookByName(@RequestParam String bookName) {
         ApiResponse book = userService.getBookByBookName(bookName);
         return ResponseEntity.status(book.isSuccess() ? 200 : 409).body(book);

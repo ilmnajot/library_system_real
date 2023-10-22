@@ -23,7 +23,7 @@ public class StudentResponse {
 
     private SchoolName schoolName;
 
-    private boolean available;
+    private boolean graduated;
 
     private Status status;
 

@@ -33,5 +33,6 @@ public class StudentRequest {
 
     private Role role;
 
+    private boolean graduated;
 
 }

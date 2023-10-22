@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import sampm.uz.library_system.enums.Category;
 
+import java.util.Collection;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
@@ -22,15 +24,10 @@ public class Book extends BaseLongEntity {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-//    private boolean available;
-
     private int count;
-
-//    private boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Author author;
 
-//    @ManyToOne
-//    private Student student;
+
 }
