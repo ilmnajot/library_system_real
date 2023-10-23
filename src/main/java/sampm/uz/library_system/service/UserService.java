@@ -14,7 +14,7 @@ import sampm.uz.library_system.model.request.UserRequest;
      ApiResponse updateBook(BookRequest request,Long id);
      ApiResponse getStudent(Long id);
      ApiResponse getAllAvailableStudent(int page, int size);
-     ApiResponse getAllNotAvailableStudent(int page, int size);
+     ApiResponse getAllGraduatedStudents(int page, int size);
      ApiResponse deleteStudent(Long id);
      ApiResponse updateStudent(StudentRequest request, Long id);
 

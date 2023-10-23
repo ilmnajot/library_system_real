@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sampm.uz.library_system.model.common.ApiResponse;
-import sampm.uz.library_system.model.request.AuthorRequest;
 import sampm.uz.library_system.model.request.BookRequest;
 import sampm.uz.library_system.model.request.StudentRequest;
 import sampm.uz.library_system.model.request.UserRequest;
@@ -80,7 +79,7 @@ public class UserController {
     @GetMapping(GET_ALL_NON_EXIST_STUDENT)
     public ResponseEntity<ApiResponse> getAllNonExistStudent(@RequestParam(name = "page", defaultValue = "0") int page,
                                                              @RequestParam(name = "size", defaultValue = "9") int size) {
-        ApiResponse students = userService.getAllNotAvailableStudent(page, size);
+        ApiResponse students = userService.getAllGraduatedStudents(page, size);
         return students != null
                 ? ResponseEntity.ok(students)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

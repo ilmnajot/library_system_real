@@ -26,7 +26,7 @@ public class User extends BaseLongEntity {
 
     private String gmailCode;
 
-    private boolean available;
+    private boolean deleted;
 
     @ManyToOne
     private Role role;

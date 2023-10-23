@@ -23,6 +23,8 @@ public class StudentRequest {
 
     private String email;
 
+    private String password;
+
     private StudentClass studentGrade;
 
     private SchoolName schoolName;
