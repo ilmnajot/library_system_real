@@ -51,21 +51,23 @@ public class UserServiceImpl implements UserService {
     public ApiResponse addBook(BookRequest request) {
         Optional<Book> optionalBook = bookRepository.findBookByIsbn(request.getIsbn());
         if (optionalBook.isPresent()) { // TODO: 10/16/2023
-            return new ApiResponse("this book has already been added", false, "here is book you wanted to add: " + optionalBook.get());
+           throw new BookException("this book has already been added here: " + optionalBook.get());
         }
         Book book = new Book();
         book.setBookName(request.getBookName());
         book.setIsbn(request.getIsbn());
         book.setDescription(request.getDescription());
         book.setCategory(request.getCategory());
+        book.setCount(request.getCount());
+        book.setAuthor(getAuthorById(request.getAuthorId())); // TODO: 10/24/2023
 //        book.setAvailable(true);
-        /*book.setAuthor(
-                Author
-                        .builder()
-                        .fullName(request.getAuthor().getFullName())
-                        .email(request.getAuthor().getEmail())
-                        .city(request.getAuthor().getCity())
-                        .build());*/
+//        book.setAuthor(
+//                Author
+//                        .builder()
+//                        .fullName(request.getAuthor().getFullName())
+//                        .email(request.getAuthor().getEmail())
+//                        .city(request.getAuthor().getCity())
+//                        .build());
 //        book.setStudent(
 //                Student
 //                        .builder()
@@ -81,12 +83,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse addBookByUser(UserRequest request) {
+    public ApiResponse addBookByUser(UserRequest request) { // TODO: 10/24/2023
         return null;
     }
 
     @Override
-    public ApiResponse addBookByUserRequest(BookRequest request) {
+    public ApiResponse addBookByUserRequest(BookRequest request) { // TODO: 10/24/2023
         Optional<Book> optionalBook = bookRepository.findBookByIsbn(request.getIsbn());
         if (optionalBook.isPresent()) {
             return new ApiResponse("this book has already been added", false, "here is book you wanted to add: " + optionalBook.get());
@@ -121,9 +123,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse getAllNotAvailableBook(int page, int size) {
+    public ApiResponse getAllNotAvailableBook(int page, int size) { // TODO: 10/24/2023
         Page<List<Book>> listPage = bookRepository.findAllByCount(Sort.by("id"), PageRequest.of(page, size));
-        if
+        if (listPage==null){
+            throw new BookException("there is no book");
+        }
         return new ApiResponse("all deleted books", true, listPage.map(book -> modelMapper.map(book, BookResponse.class)));
     }
 
@@ -180,7 +184,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse getAllGraduatedStudents(int page, int size) {
-        Page<Student> students = studentRepository.findAllByGraduatedFalse(Sort.by("id"), PageRequest.of(page, size));
+        Page<Student> students = studentRepository.findAllByGraduatedTrue(Sort.by("id"), PageRequest.of(page, size));
         return new ApiResponse("success", true, students.map(student -> modelMapper.map(student, StudentResponse.class)));
     }
 
