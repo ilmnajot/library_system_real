@@ -15,9 +15,11 @@ public class BookResponse {
 
     private Category category;
 
-    private boolean available;
+//    private boolean available;
 
     private AuthorResponse author;
+
+    private int count;
 
     private StudentResponse student;
 }

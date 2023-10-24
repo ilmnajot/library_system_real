@@ -33,7 +33,7 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     public ApiResponse addStudent(StudentRequest request) {
-        Optional<Student> optionalStudent = studentRepository.findStudentByEmailAndAvailableTrue(request.getEmail());
+        Optional<Student> optionalStudent = studentRepository.findStudentByEmailAndGraduatedFalse(request.getEmail());
         if (optionalStudent.isPresent()) {
             return new ApiResponse("there is a student with that email: " + optionalStudent.get(), false, optionalStudent.get());
         }

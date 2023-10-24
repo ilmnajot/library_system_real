@@ -16,12 +16,15 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Optional<Book> findBookByIsbn(Long isbn);
 
-    Page<List<Book>> findAllByCount(Sort sort, Pageable pageable);
+//    Page<List<Book>> findAllByCount(Sort sort, Pageable pageable);
 
 
 
 //    @Query("select b from Book b where b.bookName like %:partialBookName%")
     @Query(value = "select  * from books where books.bookName like %?1%", nativeQuery = true)
     List<Book> findBookByBookName(String bookName);
+
+
+    Page<Book> findAllByCountEmpty(Sort sort, Pageable pageable);
 
 }

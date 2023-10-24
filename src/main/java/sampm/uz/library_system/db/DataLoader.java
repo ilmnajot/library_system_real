@@ -75,7 +75,7 @@ public class DataLoader implements CommandLineRunner {
                             .workPlace("workplace")
                             .position("position")
                             .schoolName(SchoolName.SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI)
-                            .available(true)
+//                            .available(true)
                             .build());
         }
     }
