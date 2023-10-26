@@ -6,7 +6,6 @@ import sampm.uz.library_system.enums.SchoolName;
 import sampm.uz.library_system.enums.Status;
 import sampm.uz.library_system.enums.StudentClass;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -39,7 +38,7 @@ public class Student extends BaseLongEntity {
 
     @OneToOne
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Roles role;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "student_book",

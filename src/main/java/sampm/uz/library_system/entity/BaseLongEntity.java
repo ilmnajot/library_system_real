@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
+import sampm.uz.library_system.enums.RoleName;
 
 import java.sql.Timestamp;
 
@@ -32,6 +33,5 @@ public abstract class BaseLongEntity {
 
     @LastModifiedBy
     private Timestamp updateBy;
-
 
 }

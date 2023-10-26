@@ -29,6 +29,6 @@ public class User extends BaseLongEntity {
     private boolean deleted;
 
     @ManyToOne
-    private Role role;
+    private Roles role;
 
 }

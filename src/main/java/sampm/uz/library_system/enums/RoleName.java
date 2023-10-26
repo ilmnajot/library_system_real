@@ -1,6 +1,6 @@
 package sampm.uz.library_system.enums;
 
-public enum Role {
+public enum RoleName {
     DEVELOPER,
     ADMIN,
     STUDENT

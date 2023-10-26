@@ -1,2 +1,7 @@
-package sampm.uz.library_system.service;public class RoleService {
+package sampm.uz.library_system.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class RoleService {
 }

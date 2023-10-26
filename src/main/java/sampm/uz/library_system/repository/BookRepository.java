@@ -25,6 +25,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findBookByBookName(String bookName);
 
 
-    Page<Book> findAllByCountEmpty(Sort sort, Pageable pageable);
+//    Page<Book> findAllByCountEmpty(Sort sort, Pageable pageable);
 
 }

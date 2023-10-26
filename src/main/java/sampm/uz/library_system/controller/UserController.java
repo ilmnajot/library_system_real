@@ -94,7 +94,7 @@ public class UserController {
     }
 
     @PutMapping(UPDATE_STUDENT)
-    public HttpEntity<ApiResponse> updateStudent(@RequestParam StudentRequest request, @PathVariable Long id) {
+    public HttpEntity<ApiResponse> updateStudent(@RequestBody StudentRequest request, @PathVariable Long id) {
         ApiResponse student = userService.updateStudent(request, id);
         return student != null
                 ? ResponseEntity.ok(student)

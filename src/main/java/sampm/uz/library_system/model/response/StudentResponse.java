@@ -15,6 +15,8 @@ import java.util.List;
 @Data
 public class StudentResponse {
 
+    private Long id;
+
     private String fullName;
 
     private String email;
