@@ -14,9 +14,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findStudentByEmailAndGraduatedFalse(String email);
     Optional<Student> findStudentByIdAndGraduatedFalse(Long id);
     Page<Student> findAllByGraduatedFalse(Sort sort, PageRequest pageRequest);
-    Page<Student> findAllByGraduatedTrue(Sort sort, PageRequest pageRequest);
-//    Optional<Student> findStudentByIdAndAvailableTrueAndStatus(Long id, Status status);
-//    Optional<Student> findStudentByEmailAndAvailableTrue(String email);
-//    Page<Student> findAllByAvailableFalse(PageRequest pageRequest);
+    Optional<Student> findStudentByIdAndAvailableTrueAndStatus(Long id, Status status);
+    Optional<Student> findStudentByEmailAndAvailableTrue(String email);
+    Page<Student> findAllByAvailableFalse(PageRequest pageRequest);
 
 }
