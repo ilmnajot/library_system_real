@@ -23,6 +23,7 @@ public class Constants {
     public static final String UPDATE_BOOK = "/update_book/{id}";
     public static final String DELETE_BOOK = "/delete_book/{id}";
     public static final String ADD_BOOK = "/add_book";
+    public static final String INCREASE_BOOK = "/increase_book/{bookId}/increment_amount";
     public static final String GET_ALL_DELETED_BOOK= "/get_all_deleted_book";
     public static final String GET_ALL_AVAILABLE_BOOK= "/get_allA_available_book";
     public static final String GET_ALL_NOT_AVAILABLE_BOOK= "/get_all_not_availableBook";

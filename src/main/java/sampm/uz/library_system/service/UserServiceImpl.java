@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.hibernate.cfg.AvailableSettings.USER;
-import static sampm.uz.library_system.enums.Role.STUDENT;
+import static sampm.uz.library_system.enums.RoleName.STUDENT;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -51,13 +51,15 @@ public class UserServiceImpl implements UserService {
     public ApiResponse addBook(BookRequest request) {
         Optional<Book> optionalBook = bookRepository.findBookByIsbn(request.getIsbn());
         if (optionalBook.isPresent()) { // TODO: 10/16/2023
-            return new ApiResponse("this book has already been added", false, "here is book you wanted to add: " + optionalBook.get());
+            throw new BookException("this book has already been added:" + optionalBook.get());
         }
         Book book = new Book();
         book.setBookName(request.getBookName());
         book.setIsbn(request.getIsbn());
         book.setDescription(request.getDescription());
         book.setCategory(request.getCategory());
+//        book.setAuthor(getAuthorById(request.getAuthorId()));
+        book.setCount(request.getCount());
 //        book.setAvailable(true);
         /*book.setAuthor(
                 Author
@@ -77,7 +79,20 @@ public class UserServiceImpl implements UserService {
 //                        .build());
         Book savedBook = bookRepository.save(book);
         BookResponse bookResponse = modelMapper.map(savedBook, BookResponse.class);
-        return new ApiResponse("this book has been added", false, bookResponse);
+        return new ApiResponse("this book has been added", true, bookResponse);
+    }
+
+    @Override
+    public ApiResponse incrementBook(Long bookId, int incrementAmount) {
+        Optional<Book> optionalBook = bookRepository.findById(bookId);
+        if (optionalBook.isPresent()) {
+            Book book = optionalBook.get();
+            book.setCount(book.getCount() + incrementAmount);
+            Book savedBook = bookRepository.save(book);
+            BookResponse bookResponse = modelMapper.map(savedBook, BookResponse.class);
+            return new ApiResponse("this book has been incremented", true, bookResponse);
+        }
+            throw new BookException("there is no book with id: " + bookId);
     }
 
     @Override
@@ -116,15 +131,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse getAllAvailableBook(int page, int size) { // TODO: 10/16/2023 change... Exception Handler
-        Page<Book> books = bookRepository.findAllByAvailableTrue(PageRequest.of(page, size));
+        Page<Book> books = bookRepository.findAll(PageRequest.of(page, size));
         return new ApiResponse("list of books", true, books.map(book -> modelMapper.map(book, BookResponse.class)));
     }
 
     @Override
     public ApiResponse getAllNotAvailableBook(int page, int size) {
-        Page<List<Book>> listPage = bookRepository.findAllByCount(Sort.by("id"), PageRequest.of(page, size));
-        if
-        return new ApiResponse("all deleted books", true, listPage.map(book -> modelMapper.map(book, BookResponse.class)));
+        List<Book> bookPage = bookRepository.findAllByCountLessThan(1);
+        if (bookPage.isEmpty()) {
+            throw new BookException("there is no book");
+        }
+        return new ApiResponse("all deleted books", true, bookPage.stream().map(book -> modelMapper.map(book, BookResponse.class)));
     }
 
     @Override
@@ -217,7 +234,7 @@ public class UserServiceImpl implements UserService {
             return new ApiResponse("success", true, studentResponse);
         }
 
-        return new ApiResponse("failed to update", false);
+        throw new BookException("failed to update");
     }
 
     @Override
@@ -232,7 +249,7 @@ public class UserServiceImpl implements UserService {
         user.setWorkPlace(request.getWorkPlace());
         user.setPosition(request.getPosition());
         user.setSchoolName(request.getSchoolName());
-        user.setRole(Role.builder().name(USER).build());
+        user.setRole(Roles.builder().name(USER).build());
         user.setDeleted(false);
         User savedUser = userRepository.save(user);
         UserResponse userResponse = modelMapper.map(savedUser, UserResponse.class);
@@ -263,7 +280,7 @@ public class UserServiceImpl implements UserService {
         student.setStudentGrade(request.getStudentGrade());
         student.setSchoolName(request.getSchoolName());
         student.setStatus(request.getStatus());
-        student.setRole(Role.builder().name(STUDENT.name()).build());
+        student.setRole(Roles.builder().name(STUDENT.name()).build());
         student.setGraduated(false);
         Student savedStudent = studentRepository.save(student);
         StudentResponse studentResponse = modelMapper.map(savedStudent, StudentResponse.class);

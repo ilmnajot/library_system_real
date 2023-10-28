@@ -116,6 +116,15 @@ public class UserController {
                 ? ResponseEntity.ok(book)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+    @PostMapping(INCREASE_BOOK)
+    public HttpEntity<ApiResponse> incrementBook(
+            @PathVariable(name = "bookId") Long bookId,
+            @RequestParam(name = "increment_amount") int increment_amount){
+        ApiResponse apiResponse = userService.incrementBook(bookId, increment_amount);
+        return apiResponse != null
+                ? ResponseEntity.ok(apiResponse)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 
     @GetMapping(GET_BOOK)
     public HttpEntity<ApiResponse> getBook(@PathVariable Long id) {
