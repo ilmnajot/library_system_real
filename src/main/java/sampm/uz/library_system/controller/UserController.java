@@ -102,8 +102,8 @@ public class UserController {
     }
 
     @PostMapping(BOOK_TO_STUDENT)
-    public HttpEntity<ApiResponse> bookToStudent(@RequestBody BookRequest bookRequest, @RequestBody StudentRequest studentRequest) {
-        ApiResponse bookToStudent = studentService.getBookToStudent(studentRequest, bookRequest);
+    public HttpEntity<ApiResponse> bookToStudent(@PathVariable Long bookId, @PathVariable Long studentId) {
+        ApiResponse bookToStudent = studentService.getBookToStudent(bookId, studentId);
         return bookToStudent != null
                 ? ResponseEntity.ok(bookToStudent)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -121,6 +121,15 @@ public class UserController {
             @PathVariable(name = "bookId") Long bookId,
             @RequestParam(name = "increment_amount") int increment_amount){
         ApiResponse apiResponse = userService.incrementBook(bookId, increment_amount);
+        return apiResponse != null
+                ? ResponseEntity.ok(apiResponse)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+    @PostMapping(DECREASE_BOOK)
+    public HttpEntity<ApiResponse> decrementBook(
+            @PathVariable(name = "bookId") Long bookId,
+            @RequestParam(name = "decrement_amount") int decrement_amount){
+        ApiResponse apiResponse = userService.decrementBook(bookId, decrement_amount);
         return apiResponse != null
                 ? ResponseEntity.ok(apiResponse)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

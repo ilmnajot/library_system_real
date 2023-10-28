@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sampm.uz.library_system.entity.*;
 import sampm.uz.library_system.enums.Status;
+import sampm.uz.library_system.exception.BaseException;
 import sampm.uz.library_system.exception.BookException;
 import sampm.uz.library_system.model.common.ApiResponse;
 import sampm.uz.library_system.model.request.BookRequest;
@@ -50,36 +51,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse addBook(BookRequest request) {
         Optional<Book> optionalBook = bookRepository.findBookByIsbn(request.getIsbn());
-        if (optionalBook.isPresent()) { // TODO: 10/16/2023
+        if (optionalBook.isPresent()) {
             throw new BookException("this book has already been added:" + optionalBook.get());
+        }
+        if (!existAuthorById(request.getAuthorId())){
+            throw new BookException("author is not registered");
         }
         Book book = new Book();
         book.setBookName(request.getBookName());
         book.setIsbn(request.getIsbn());
         book.setDescription(request.getDescription());
         book.setCategory(request.getCategory());
-//        book.setAuthor(getAuthorById(request.getAuthorId()));
+        book.setAuthorId(request.getAuthorId());
         book.setCount(request.getCount());
-//        book.setAvailable(true);
-        /*book.setAuthor(
-                Author
-                        .builder()
-                        .fullName(request.getAuthor().getFullName())
-                        .email(request.getAuthor().getEmail())
-                        .city(request.getAuthor().getCity())
-                        .build());*/
-//        book.setStudent(
-//                Student
-//                        .builder()
-//                        .fullName(request.getStudent().getFullName())
-//                        .email(request.getStudent().getEmail())
-//                        .studentGrade(request.getStudent().getStudentGrade())
-//                        .schoolName(request.getStudent().getSchoolName())
-//                        .status(request.getStudent().getStatus())
-//                        .build());
         Book savedBook = bookRepository.save(book);
         BookResponse bookResponse = modelMapper.map(savedBook, BookResponse.class);
         return new ApiResponse("this book has been added", true, bookResponse);
+    }
+    public boolean existAuthorById(Long id){
+        return authorRepository.existsById(id);
     }
 
     @Override
@@ -93,6 +83,23 @@ public class UserServiceImpl implements UserService {
             return new ApiResponse("this book has been incremented", true, bookResponse);
         }
             throw new BookException("there is no book with id: " + bookId);
+    }
+
+    @Override
+    public ApiResponse decrementBook(Long bookId, int decrementAmount){
+        Optional<Book> optionalBook = bookRepository.findById(bookId);
+        if (optionalBook.isEmpty()) {
+            throw new BookException("there is no book with id: " + bookId);
+        }
+        Book book = optionalBook.get();
+        if (book.getCount()-decrementAmount>=0){
+            book.setCount(book.getCount() - decrementAmount);
+            Book savedBook = bookRepository.save(book);
+            BookResponse bookResponse = modelMapper.map(savedBook, BookResponse.class);
+            return new ApiResponse("this book has been incremented", true, bookResponse);
+        }
+        throw new BaseException("you reach limit of book and only there are: " + book.getCount() + " existing");
+
     }
 
     @Override
@@ -117,8 +124,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse getBook(Long id) {
         Book book = getBookById(id);
-        Book savedBook = bookRepository.save(book);
-        BookResponse bookResponse = modelMapper.map(savedBook, BookResponse.class);
+//        Book savedBook = bookRepository.save(book);
+        BookResponse bookResponse = modelMapper.map(book, BookResponse.class);
         return new ApiResponse("here is the book you want to get: ", true, bookResponse);
     }
     public Book getBookById(Long id) {

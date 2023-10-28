@@ -53,6 +53,7 @@ public class DataLoader implements CommandLineRunner {
                             .category(Category.DRAMA)
                             .count(10)
                             .author(null)
+                            .authorId(1L)
                             .build());
 
 

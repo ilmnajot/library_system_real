@@ -33,4 +33,6 @@ import sampm.uz.library_system.model.request.UserRequest;
      ApiResponse getBookByBookName(String bookName);
 
      ApiResponse incrementBook(Long bookId, int incrementAmount);
+
+     ApiResponse decrementBook(Long bookId, int decrementAmount);
  }

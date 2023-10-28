@@ -27,7 +27,11 @@ public class Book extends BaseLongEntity {
     private int count;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "author_id", insertable = false, updatable = false)
     private Author author;
+
+    @Column(name = "author_id")
+    private Long authorId;
 
 
 }

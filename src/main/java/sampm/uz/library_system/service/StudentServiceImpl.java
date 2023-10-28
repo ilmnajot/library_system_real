@@ -6,13 +6,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sampm.uz.library_system.entity.Book;
 import sampm.uz.library_system.entity.Student;
+import sampm.uz.library_system.entity.StudentBook;
 import sampm.uz.library_system.exception.BookException;
-import sampm.uz.library_system.model.request.BookRequest;
 import sampm.uz.library_system.model.request.StudentRequest;
 import sampm.uz.library_system.model.common.ApiResponse;
 import sampm.uz.library_system.model.response.BookResponse;
+import sampm.uz.library_system.model.response.StudentBookResponse;
 import sampm.uz.library_system.model.response.StudentResponse;
 import sampm.uz.library_system.repository.BookRepository;
+import sampm.uz.library_system.repository.StudentBookRepository;
 import sampm.uz.library_system.repository.StudentRepository;
 import sampm.uz.library_system.repository.UserRepository;
 import java.util.Optional;
@@ -24,11 +26,14 @@ public class StudentServiceImpl implements StudentService{
     private final StudentRepository studentRepository;
     private final ModelMapper modelMapper;
     private final BookRepository bookRepository;
-    public StudentServiceImpl(UserRepository userRepository, StudentRepository studentRepository, ModelMapper modelMapper, BookRepository bookRepository) {
+
+    private final StudentBookRepository studentBookRepository;
+    public StudentServiceImpl(UserRepository userRepository, StudentRepository studentRepository, ModelMapper modelMapper, BookRepository bookRepository, StudentBookRepository studentBookRepository) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
         this.modelMapper = modelMapper;
         this.bookRepository = bookRepository;
+        this.studentBookRepository = studentBookRepository;
     }
 
     @Override
@@ -62,39 +67,20 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
-    public ApiResponse getBookToStudent(StudentRequest studentRequest, BookRequest bookRequest) {
-        Optional<Book> optionalBook = bookRepository.findBookByIsbn(bookRequest.getIsbn());
-        if (!optionalBook.isPresent() || optionalBook.get().getBookName().equals(studentRequest.getBooks().stream().map(book -> book.getBookName()))) {
-            return new ApiResponse("the student has already taken this book", false, optionalBook.get());
+    public ApiResponse getBookToStudent(Long bookId, Long studentId) {
+        if (!bookRepository.existsById(bookId)){
+            throw new BookException("book not found");
         }
-        Book book = optionalBook.get();
-        //book.setAvailable(true);
-        book.setBookName(bookRequest.getBookName());
-        book.setIsbn(bookRequest.getIsbn());
-        book.setDescription(bookRequest.getDescription());
-        book.setCategory(bookRequest.getCategory());
-       // book.setAvailable(true);
-        /*book.setAuthor(
-                Author
-                        .builder()
-                        .fullName(bookRequest.getAuthor().getFullName())
-                        .email(bookRequest.getAuthor().getEmail())
-                        .city(bookRequest.getAuthor().getCity())
-                        .build());
-        book.setStudent(
-                Student
-                        .builder()
-                        .fullName(studentRequest.getFullName())
-                        .email(studentRequest.getEmail())
-                        .studentGrade(studentRequest.getStudentGrade())
-                        .schoolName(studentRequest.getSchoolName())
-                        .status(studentRequest.getStatus())
-                        .books(studentRequest.getBooks())
-                        .role(studentRequest.getRole())
-                        .build());*/
-        Book savedBook = bookRepository.save(book);
-        BookResponse bookResponse = modelMapper.map(savedBook, BookResponse.class);
-        return new ApiResponse("success", true,bookResponse);
+        if (!studentRepository.existsById(studentId)){
+            throw new BookException("not found");
+        }
+        StudentBook studentBook = new StudentBook();
+        studentBook.setBookId(bookId);
+        studentBook.setStudentId(studentId);
+
+        StudentBook savedBookToStudent = studentBookRepository.save(studentBook);
+        StudentBookResponse studentBookResponse = modelMapper.map(savedBookToStudent, StudentBookResponse.class);
+        return new ApiResponse("success", true,studentBookResponse);
     }
     @Override
     public ApiResponse updateStudent(StudentRequest request, Long id) {

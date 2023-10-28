@@ -14,5 +14,5 @@ public interface StudentService {
     ApiResponse updateStudent(StudentRequest request, Long id);
     ApiResponse deleteStudent(Long id);
 
-    ApiResponse getBookToStudent(StudentRequest studentRequest, BookRequest bookRequest);
+    ApiResponse getBookToStudent(Long bookId , Long studentId);
 }
