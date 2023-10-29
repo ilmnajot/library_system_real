@@ -10,7 +10,6 @@ import sampm.uz.library_system.model.request.StudentRequest;
 import sampm.uz.library_system.model.request.UserRequest;
 import sampm.uz.library_system.service.StudentService;
 import sampm.uz.library_system.service.UserService;
-
 import static sampm.uz.library_system.utils.Constants.*;
 import static sampm.uz.library_system.utils.Constants.GET_ALL_BOOK;
 
@@ -103,7 +102,7 @@ public class UserController {
 
     @PostMapping(BOOK_TO_STUDENT)
     public HttpEntity<ApiResponse> bookToStudent(@PathVariable Long bookId, @PathVariable Long studentId) {
-        ApiResponse bookToStudent = studentService.getBookToStudent(bookId, studentId);
+        ApiResponse bookToStudent = userService.getBookToStudent(bookId, studentId);
         return bookToStudent != null
                 ? ResponseEntity.ok(bookToStudent)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

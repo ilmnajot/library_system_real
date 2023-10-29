@@ -1,8 +1,10 @@
 package sampm.uz.library_system.model.request;
 
+import jakarta.persistence.Column;
 import lombok.Data;
 import sampm.uz.library_system.entity.Book;
 import sampm.uz.library_system.entity.Roles;
+import sampm.uz.library_system.enums.RoleName;
 import sampm.uz.library_system.enums.SchoolName;
 import sampm.uz.library_system.enums.Status;
 import sampm.uz.library_system.enums.StudentClass;
@@ -26,7 +28,7 @@ public class StudentRequest {
 
     private List<Book> books;
 
-    private Roles role;
+    private Long roleId;
 
     private boolean graduated;
 

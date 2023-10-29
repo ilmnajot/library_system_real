@@ -1,18 +1,17 @@
 package sampm.uz.library_system.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "student_book")
-public class StudentBook extends BaseLongEntity {
+public class StudentBook  {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(insertable = false, updatable = false)
@@ -23,8 +22,8 @@ public class StudentBook extends BaseLongEntity {
     private Book book;
 
     @Column(name = "student_id")
-    private Long studentId;
+    private Long student_id;
 
     @Column(name = "book_id")
-    private Long bookId;
+    private Long book_id;
 }

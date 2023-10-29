@@ -26,7 +26,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
 //    Page<List<Book>> findAll(Sort sort, PageRequest request);
     List<Book> findAllByCountLessThan(int count);
+    List<Book> findAllByCountGreaterThan(int count);
 
+    boolean existsByIdAndCountGreaterThan(Long id, int count);
+    boolean existsByIdAndCountLessThan(Long id, int count);
 
 //    Page<Book> findAllByCountEmpty(Sort sort, Pageable pageable);
 

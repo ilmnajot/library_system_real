@@ -1,13 +1,15 @@
-package sampm.uz.library_system.model.request;
-
+package sampm.uz.library_system.model.response;
 import lombok.Data;
 import sampm.uz.library_system.enums.Category;
 
 @Data
-public class BookRequest {
+public class BookResponseById {
+
+    private Long id;
 
     private String bookName;
 
+//    @Size(min = 13, max = 13, message = "message must be 13")
     private Long isbn; //13-digit code of the book
 
     private String description;
@@ -16,9 +18,7 @@ public class BookRequest {
 
 //    private boolean available;
 
-    private Long authorId;
-
-//    private Student student;
+    private AuthorResponseById author;
 
     private int count;
 

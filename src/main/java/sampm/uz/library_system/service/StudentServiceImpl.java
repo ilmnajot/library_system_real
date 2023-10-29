@@ -4,13 +4,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import sampm.uz.library_system.entity.Book;
 import sampm.uz.library_system.entity.Student;
 import sampm.uz.library_system.entity.StudentBook;
 import sampm.uz.library_system.exception.BookException;
 import sampm.uz.library_system.model.request.StudentRequest;
 import sampm.uz.library_system.model.common.ApiResponse;
-import sampm.uz.library_system.model.response.BookResponse;
 import sampm.uz.library_system.model.response.StudentBookResponse;
 import sampm.uz.library_system.model.response.StudentResponse;
 import sampm.uz.library_system.repository.BookRepository;
@@ -72,11 +70,11 @@ public class StudentServiceImpl implements StudentService{
             throw new BookException("book not found");
         }
         if (!studentRepository.existsById(studentId)){
-            throw new BookException("not found");
+            throw new BookException("student not found");
         }
         StudentBook studentBook = new StudentBook();
-        studentBook.setBookId(bookId);
-        studentBook.setStudentId(studentId);
+        studentBook.setStudent_id(studentId);
+        studentBook.setBook_id(bookId);
 
         StudentBook savedBookToStudent = studentBookRepository.save(studentBook);
         StudentBookResponse studentBookResponse = modelMapper.map(savedBookToStudent, StudentBookResponse.class);

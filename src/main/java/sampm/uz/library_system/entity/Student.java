@@ -40,6 +40,9 @@ public class Student extends BaseLongEntity {
     @Enumerated(EnumType.STRING)
     private Roles role;
 
+    @Column(name = "role_id", insertable = false, updatable = false)
+    private Long roleId;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "student_book",
             joinColumns = @JoinColumn(name = "student_id"),

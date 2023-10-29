@@ -7,20 +7,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sampm.uz.library_system.entity.*;
+import sampm.uz.library_system.enums.SchoolName;
 import sampm.uz.library_system.enums.Status;
 import sampm.uz.library_system.exception.BaseException;
 import sampm.uz.library_system.exception.BookException;
+import sampm.uz.library_system.exception.StudentException;
 import sampm.uz.library_system.model.common.ApiResponse;
 import sampm.uz.library_system.model.request.BookRequest;
 import sampm.uz.library_system.model.request.StudentRequest;
 import sampm.uz.library_system.model.request.UserRequest;
-import sampm.uz.library_system.model.response.BookResponse;
-import sampm.uz.library_system.model.response.StudentResponse;
-import sampm.uz.library_system.model.response.UserResponse;
-import sampm.uz.library_system.repository.AuthorRepository;
-import sampm.uz.library_system.repository.BookRepository;
-import sampm.uz.library_system.repository.StudentRepository;
-import sampm.uz.library_system.repository.UserRepository;
+import sampm.uz.library_system.model.response.*;
+import sampm.uz.library_system.repository.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,14 +34,16 @@ public class UserServiceImpl implements UserService {
     private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthorRepository authorRepository;
+    private final StudentBookRepository studentBookRepository;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, BookRepository bookRepository, StudentRepository studentRepository, PasswordEncoder passwordEncoder, AuthorRepository authorRepository) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, BookRepository bookRepository, StudentRepository studentRepository, PasswordEncoder passwordEncoder, AuthorRepository authorRepository, StudentBookRepository studentBookRepositort, StudentBookRepository studentBookRepository) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.bookRepository = bookRepository;
         this.studentRepository = studentRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorRepository = authorRepository;
+        this.studentBookRepository = studentBookRepository;
     }
 
 
@@ -54,7 +53,7 @@ public class UserServiceImpl implements UserService {
         if (optionalBook.isPresent()) {
             throw new BookException("this book has already been added:" + optionalBook.get());
         }
-        if (!existAuthorById(request.getAuthorId())){
+        if (!existAuthorById(request.getAuthorId())) {
             throw new BookException("author is not registered");
         }
         Book book = new Book();
@@ -68,7 +67,8 @@ public class UserServiceImpl implements UserService {
         BookResponse bookResponse = modelMapper.map(savedBook, BookResponse.class);
         return new ApiResponse("this book has been added", true, bookResponse);
     }
-    public boolean existAuthorById(Long id){
+
+    public boolean existAuthorById(Long id) {
         return authorRepository.existsById(id);
     }
 
@@ -82,17 +82,17 @@ public class UserServiceImpl implements UserService {
             BookResponse bookResponse = modelMapper.map(savedBook, BookResponse.class);
             return new ApiResponse("this book has been incremented", true, bookResponse);
         }
-            throw new BookException("there is no book with id: " + bookId);
+        throw new BookException("there is no book with id: " + bookId);
     }
 
     @Override
-    public ApiResponse decrementBook(Long bookId, int decrementAmount){
+    public ApiResponse decrementBook(Long bookId, int decrementAmount) {
         Optional<Book> optionalBook = bookRepository.findById(bookId);
         if (optionalBook.isEmpty()) {
             throw new BookException("there is no book with id: " + bookId);
         }
         Book book = optionalBook.get();
-        if (book.getCount()-decrementAmount>=0){
+        if (book.getCount() - decrementAmount >= 0) {
             book.setCount(book.getCount() - decrementAmount);
             Book savedBook = bookRepository.save(book);
             BookResponse bookResponse = modelMapper.map(savedBook, BookResponse.class);
@@ -116,7 +116,6 @@ public class UserServiceImpl implements UserService {
         Student student = new Student();
         Book book = new Book();
         book.setBookName(student.getFullName());
-        //book.setAvailable(true);
         return new ApiResponse("this book has been added", false, modelMapper.map(bookRepository.save(book), BookResponse.class));
     }
 
@@ -124,9 +123,32 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse getBook(Long id) {
         Book book = getBookById(id);
-//        Book savedBook = bookRepository.save(book);
-        BookResponse bookResponse = modelMapper.map(book, BookResponse.class);
-        return new ApiResponse("here is the book you want to get: ", true, bookResponse);
+        BookResponseById bookResponseById = modelMapper.map(book, BookResponseById.class);
+        return new ApiResponse("here is the book you want to get: ", true, bookResponseById);
+    }
+
+    @Override
+    public ApiResponse getBookToStudent(Long bookId, Long studentId) {
+        if (!studentRepository.existsByIdAndGraduatedFalse(studentId)) {
+            throw new StudentException("student not found with id " + studentId);
+        }
+        if (!bookRepository.existsById(bookId)) {
+            throw new BookException("book not found with id " + bookId);
+        }
+        if (bookRepository.existsByIdAndCountGreaterThan(bookId, 1)) {
+            StudentBook studentBook = new StudentBook();
+            studentBook.setStudent_id(studentId);
+            studentBook.setBook_id(bookId);
+            Optional<Book> optionalBook = bookRepository.findById(bookId);
+            Book book1 = optionalBook.get();
+            book1.setCount(book1.getCount() - 1);
+            bookRepository.save(book1);
+            StudentBook savedBookToStudent = studentBookRepository.save(studentBook);
+            StudentBookResponse studentBookResponse = modelMapper.map(savedBookToStudent, StudentBookResponse.class);
+            return new ApiResponse("successfully the book registered to the: " + studentId, true, studentBookResponse);
+        }
+        throw new BookException("there is no book to take");
+
     }
     public Book getBookById(Long id) {
         Optional<Book> optionalBook = bookRepository.findById(id);
@@ -160,7 +182,8 @@ public class UserServiceImpl implements UserService {
         }
         throw new BookException("there is no such book");
     }
-    public Author getAuthorById(Long authorId){
+
+    public Author getAuthorById(Long authorId) {
         Optional<Author> optionalAuthor = authorRepository.findById(authorId);
         if (optionalAuthor.isPresent()) {
             return optionalAuthor.get();
@@ -204,8 +227,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse getAllGraduatedStudents(int page, int size) {
-        Page<Student> students = studentRepository.findAllByGraduatedFalse(Sort.by("id"), PageRequest.of(page, size));
-        return new ApiResponse("success", true, students.map(student -> modelMapper.map(student, StudentResponse.class)));
+        List<Student> students = studentRepository.findAllByGraduatedTrue(Sort.by("id"), PageRequest.of(page, size));
+        return new ApiResponse("success", true, students.stream().map(student -> modelMapper.map(student, StudentResponse.class)));
     }
 
     @Override
@@ -284,10 +307,13 @@ public class UserServiceImpl implements UserService {
         Student student = new Student();
         student.setFullName(request.getFullName());
         student.setEmail(request.getEmail());
+        student.setPassword(passwordEncoder.encode(request.getPassword()));
         student.setStudentGrade(request.getStudentGrade());
-        student.setSchoolName(request.getSchoolName());
+        student.setSchoolName(SchoolName.SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI);
+//        student.setSchoolName(request.getSchoolName());
         student.setStatus(request.getStatus());
-        student.setRole(Roles.builder().name(STUDENT.name()).build());
+        student.setBooks(null);
+        student.setRoleId(request.getRoleId());
         student.setGraduated(false);
         Student savedStudent = studentRepository.save(student);
         StudentResponse studentResponse = modelMapper.map(savedStudent, StudentResponse.class);
@@ -297,10 +323,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse getBookByBookName(String bookName) {
         List<Book> bookList = bookRepository.findBookByBookName(bookName);
-        if (bookList!=null){
-        Stream<BookResponse> responseStream = bookList.stream().map(book -> modelMapper.map(book, BookResponse.class));
-        return new ApiResponse("success", true, responseStream);
-    }
+        if (bookList != null) {
+            Stream<BookResponse> responseStream = bookList.stream().map(book -> modelMapper.map(book, BookResponse.class));
+            return new ApiResponse("success", true, responseStream);
+        }
         throw new BookException("the book not found");
 
     }
