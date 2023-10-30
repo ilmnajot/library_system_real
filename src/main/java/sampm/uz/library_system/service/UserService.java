@@ -39,4 +39,7 @@ import sampm.uz.library_system.model.request.UserRequest;
      ApiResponse getBookToStudent(Long bookId, Long studentId);
 
      ApiResponse getBooksToStudent(Long bookId, Long studentId, int amount);
+
+     ApiResponse returnBook(Long bookId, Long studentId, int amount);
+
  }

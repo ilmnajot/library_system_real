@@ -10,6 +10,7 @@ import sampm.uz.library_system.model.request.StudentRequest;
 import sampm.uz.library_system.model.request.UserRequest;
 import sampm.uz.library_system.service.StudentService;
 import sampm.uz.library_system.service.UserService;
+
 import static sampm.uz.library_system.utils.Constants.*;
 import static sampm.uz.library_system.utils.Constants.GET_ALL_BOOK;
 
@@ -107,17 +108,28 @@ public class UserController {
                 ? ResponseEntity.ok(bookToStudent)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
     @PostMapping("/getSomeBooks/{bookId}/{studentId}")
     public HttpEntity<ApiResponse> getBooksToStudent(
             @PathVariable(name = "bookId") Long bookId,
             @PathVariable(name = "studentId") Long studentId,
             @RequestParam(name = "amount") int amount) {
         ApiResponse booksToStudent = userService.getBooksToStudent(bookId, studentId, amount);
-        return booksToStudent!=null
+        return booksToStudent != null
                 ? ResponseEntity.ok(booksToStudent)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
     }
+
+    @PutMapping("/returnBook/{bookId}/{studentId}/amount")
+    public HttpEntity<ApiResponse> returnBook(@PathVariable Long bookId, @PathVariable Long studentId, @RequestParam(name = "amount") int amount) {
+        {
+            ApiResponse apiResponse = userService.returnBook(bookId, studentId, amount);
+            return apiResponse != null
+                    ? ResponseEntity.ok(apiResponse)
+                    : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }}
+
 
     @PostMapping(ADD_BOOK)
     public HttpEntity<ApiResponse> addBook(@RequestBody BookRequest request) {
@@ -126,19 +138,21 @@ public class UserController {
                 ? ResponseEntity.ok(book)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
     @PostMapping(INCREASE_BOOK)
     public HttpEntity<ApiResponse> incrementBook(
             @PathVariable(name = "bookId") Long bookId,
-            @RequestParam(name = "increment_amount") int increment_amount){
+            @RequestParam(name = "increment_amount") int increment_amount) {
         ApiResponse apiResponse = userService.incrementBook(bookId, increment_amount);
         return apiResponse != null
                 ? ResponseEntity.ok(apiResponse)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
     @PostMapping(DECREASE_BOOK)
     public HttpEntity<ApiResponse> decrementBook(
             @PathVariable(name = "bookId") Long bookId,
-            @RequestParam(name = "decrement_amount") int decrement_amount){
+            @RequestParam(name = "decrement_amount") int decrement_amount) {
         ApiResponse apiResponse = userService.decrementBook(bookId, decrement_amount);
         return apiResponse != null
                 ? ResponseEntity.ok(apiResponse)
