@@ -148,8 +148,34 @@ public class UserServiceImpl implements UserService {
             return new ApiResponse("successfully the book registered to the: " + studentId, true, studentBookResponse);
         }
         throw new BookException("there is no book to take");
-
     }
+
+    @Override
+    public ApiResponse getBooksToStudent(Long bookId, Long studentId, int amount) {
+        if (!studentRepository.existsById(studentId)) {
+            throw new StudentException("student not found with id: " + studentId);
+        }
+        if (!bookRepository.existsById(bookId)) {
+            throw new BookException("there no book with id: " + bookId);
+        }
+        if (bookRepository.existsByIdAndCountLessThan(bookId, 1)) {
+            throw new BookException("book is not available");
+        }
+        StudentBook studentBook = new StudentBook();
+        Book book = bookRepository.findById(bookId).get();
+        if (book.getCount()-amount>=0){
+        studentBook.setAmount(amount);
+        studentBook.setStudent_id(studentId);
+        studentBook.setBook_id(bookId);
+        book.setCount(book.getCount()-amount);
+        bookRepository.save(book);
+        StudentBook savedStudentBook = studentBookRepository.save(studentBook);
+        StudentBookResponse mapped = modelMapper.map(savedStudentBook, StudentBookResponse.class);
+        return new ApiResponse("congratulations: you have taken: " + studentBook.getAmount() + " all together but only " + book.getCount() + " left these type of book", true, mapped);
+    }
+        throw new BookException("only number of books left: "+ book.getCount());
+    }
+
     public Book getBookById(Long id) {
         Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isPresent()) {

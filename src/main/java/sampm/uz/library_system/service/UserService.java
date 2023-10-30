@@ -37,4 +37,6 @@ import sampm.uz.library_system.model.request.UserRequest;
      ApiResponse decrementBook(Long bookId, int decrementAmount);
 
      ApiResponse getBookToStudent(Long bookId, Long studentId);
+
+     ApiResponse getBooksToStudent(Long bookId, Long studentId, int amount);
  }

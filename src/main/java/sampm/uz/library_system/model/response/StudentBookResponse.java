@@ -16,4 +16,7 @@ public class StudentBookResponse {
     @Column(name = "book_id")
     private Long book_id;
 
+    @Column(name = "amount")
+    private int amount;
+
 }

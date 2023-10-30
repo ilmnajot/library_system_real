@@ -107,6 +107,17 @@ public class UserController {
                 ? ResponseEntity.ok(bookToStudent)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+    @PostMapping("/getSomeBooks/{bookId}/{studentId}")
+    public HttpEntity<ApiResponse> getBooksToStudent(
+            @PathVariable(name = "bookId") Long bookId,
+            @PathVariable(name = "studentId") Long studentId,
+            @RequestParam(name = "amount") int amount) {
+        ApiResponse booksToStudent = userService.getBooksToStudent(bookId, studentId, amount);
+        return booksToStudent!=null
+                ? ResponseEntity.ok(booksToStudent)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+    }
 
     @PostMapping(ADD_BOOK)
     public HttpEntity<ApiResponse> addBook(@RequestBody BookRequest request) {
