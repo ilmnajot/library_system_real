@@ -176,27 +176,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse returnBook(Long bookId, Long  studentId, int amount) {
+    public ApiResponse returnBook(Long  studentId, StudentRequest request, Long bookId) {
         if (!studentRepository.existsById(studentId)) {
             throw new BookException("there is no such student: " + studentId);
         }
-        if (!bookRepository.existsById(bookId)) {
-            throw new BookException("there is no such book: " + bookId);
+        Optional<Student> studentByIdOrEmail = studentRepository.findStudentByIdOrEmail(studentId, request.getEmail());
+        if (studentByIdOrEmail.isEmpty()) {
+            throw new StudentException("there is no such student: " + studentId);
         }
-        if (studentRepository.existsByIdAndBooksContaining(studentId, bookRepository.findById(bookId).get())) {
-            StudentBook studentBook = new StudentBook();
-            studentBook.setStudent_id(studentId);
-            studentBook.setBook_id(bookId);
-            Optional<Book> optionalBook = bookRepository.findById(bookId);
-            Book book1 = optionalBook.get();
-            studentBook.setAmount(studentBook.getAmount() - 1);
-            book1.setCount(book1.getCount() + 1);
-            bookRepository.save(book1);
-            StudentBook savedBookToStudent = studentBookRepository.save(studentBook);
-            StudentBookResponse studentBookResponse = modelMapper.map(savedBookToStudent, StudentBookResponse.class);
-            return new ApiResponse("successfully the book registered to the: " + studentId, true, studentBookResponse);
-        }
-        return null;
+        Book book = bookRepository.findById(bookId).get();
+        book.setCount(book.getCount() + 1);
+        bookRepository.save(book);
+        Student student = studentByIdOrEmail.get();
+        StudentBook studentBook = new StudentBook();
+        student.setNumberOfBooks(studentBook.getAmount()-1);
+        studentRepository.save(student);
+        StudentBook studentBookSaved = studentBookRepository.save(studentBook);
+        StudentBookResponse studentBookResponse = modelMapper.map(studentBookSaved, StudentBookResponse.class);
+        return new ApiResponse("success", true, studentBookResponse);
     }
 
     public Book getBookById(Long id) {

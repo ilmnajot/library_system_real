@@ -18,6 +18,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Page<Student> findAllByGraduatedFalse(Sort sort, PageRequest pageRequest);
     List<Student> findAllByGraduatedTrue(Sort sort, PageRequest pageRequest);
 
+    Optional<Student> findStudentByIdOrEmail(Long studentId, String email);
+
     boolean existsByIdAndGraduatedFalse( Long id);
     boolean existsByIdAndBooksContaining(Long id, Book book);
 

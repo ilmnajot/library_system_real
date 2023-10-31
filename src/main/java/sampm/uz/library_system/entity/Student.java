@@ -40,6 +40,8 @@ public class Student extends BaseLongEntity {
     @Enumerated(EnumType.STRING)
     private Roles role;
 
+    private int numberOfBooks;
+
     @Column(name = "role_id", insertable = false, updatable = false)
     private Long roleId;
 

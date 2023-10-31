@@ -121,10 +121,14 @@ public class UserController {
 
     }
 
-    @PutMapping("/returnBook/{bookId}/{studentId}/amount")
-    public HttpEntity<ApiResponse> returnBook(@PathVariable Long bookId, @PathVariable Long studentId, @RequestParam(name = "amount") int amount) {
+    @PutMapping("/returnBook/{studentId}/{bookId}")
+    public HttpEntity<ApiResponse> returnBook(
+            @PathVariable Long studentId,
+            @PathVariable Long bookId,
+            @RequestBody StudentRequest request
+    ) {
         {
-            ApiResponse apiResponse = userService.returnBook(bookId, studentId, amount);
+            ApiResponse apiResponse = userService.returnBook(studentId, request, bookId);
             return apiResponse != null
                     ? ResponseEntity.ok(apiResponse)
                     : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
