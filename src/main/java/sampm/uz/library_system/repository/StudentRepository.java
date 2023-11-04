@@ -23,6 +23,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     boolean existsByIdAndGraduatedFalse( Long id);
     boolean existsByIdAndBooksContaining(Long id, Book book);
 
+    Optional<Student> findStudentByEmail(String email);
+
 //    Optional<Student> findStudentByIdAndAvailableTrueAndStatus(Long id, Status status);
 //    Optional<Student> findStudentByEmailAndAvailableTrue(String email);
 //    Page<Student> findAllByAvailableFalse(PageRequest pageRequest);

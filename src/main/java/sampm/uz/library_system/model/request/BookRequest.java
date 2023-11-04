@@ -1,5 +1,8 @@
 package sampm.uz.library_system.model.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import sampm.uz.library_system.enums.Category;
 
@@ -20,6 +23,8 @@ public class BookRequest {
 
 //    private Student student;
 
+
+    @NotNull(message = "please enter number of books")
     private int count;
 
 }

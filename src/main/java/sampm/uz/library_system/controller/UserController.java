@@ -1,13 +1,17 @@
 package sampm.uz.library_system.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import sampm.uz.library_system.entity.Student;
 import sampm.uz.library_system.model.common.ApiResponse;
 import sampm.uz.library_system.model.request.BookRequest;
 import sampm.uz.library_system.model.request.StudentRequest;
 import sampm.uz.library_system.model.request.UserRequest;
+import sampm.uz.library_system.model.response.StudentResponse;
 import sampm.uz.library_system.service.StudentService;
 import sampm.uz.library_system.service.UserService;
 
@@ -58,6 +62,21 @@ public class UserController {
                 ? ResponseEntity.ok(student)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model){
+        model.addAttribute("student", new StudentRequest());
+        return "registrationForm";
+    }
+    @PostMapping("/register")
+    public String registerStudent(@ModelAttribute(name = "student") StudentRequest student){
+        userService.addStudent(student);
+        return "redirect:/registration-success";
+    }
+    @PostMapping("/login")
+    public String loginStudent(@ModelAttribute(name = "student") StudentRequest student){
+        userService.addStudent(student);
+        return "redirect:/loginForm";
+    }
 
     @GetMapping(GET_STUDENT)
     public HttpEntity<ApiResponse> getStudent(@PathVariable Long id) {
@@ -94,13 +113,19 @@ public class UserController {
     }
 
     @PutMapping(UPDATE_STUDENT)
-    public HttpEntity<ApiResponse> updateStudent(@RequestBody StudentRequest request, @PathVariable Long id) {
-        ApiResponse student = userService.updateStudent(request, id);
+    public HttpEntity<ApiResponse> updateStudent(@RequestBody StudentRequest request, @PathVariable(name = "studentId") Long studentId) {
+        ApiResponse student = userService.updateStudent(request, studentId);
         return student != null
                 ? ResponseEntity.ok(student)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
-
+    @PutMapping(GRADUATE_STUDENT)
+    public HttpEntity<ApiResponse> graduateTrue(@RequestBody StudentRequest request, @PathVariable(name = "studentId") Long studentId) {
+        ApiResponse student = userService.graduateStudentTrue(request, studentId);
+        return student != null
+                ? ResponseEntity.ok(student)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
     @PostMapping(BOOK_TO_STUDENT)
     public HttpEntity<ApiResponse> bookToStudent(@PathVariable Long bookId, @PathVariable Long studentId) {
         ApiResponse bookToStudent = userService.getBookToStudent(bookId, studentId);
@@ -109,7 +134,7 @@ public class UserController {
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @PostMapping("/getSomeBooks/{bookId}/{studentId}")
+    @PostMapping(GET_SOME_BOOKS)
     public HttpEntity<ApiResponse> getBooksToStudent(
             @PathVariable(name = "bookId") Long bookId,
             @PathVariable(name = "studentId") Long studentId,
@@ -121,22 +146,17 @@ public class UserController {
 
     }
 
-    @PutMapping("/returnBook/{studentId}/{bookId}")
-    public HttpEntity<ApiResponse> returnBook(
-            @PathVariable Long studentId,
-            @PathVariable Long bookId,
-            @RequestBody StudentRequest request
-    ) {
-        {
-            ApiResponse apiResponse = userService.returnBook(studentId, request, bookId);
-            return apiResponse != null
-                    ? ResponseEntity.ok(apiResponse)
-                    : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }}
+    @PostMapping(RETURN_BOOK)
+    public HttpEntity<ApiResponse> returnBook(@PathVariable Long studentId,@PathVariable Long bookId) {
+        ApiResponse apiResponse = userService.returnBook(studentId, bookId);
+        return apiResponse != null
+                ? ResponseEntity.ok(apiResponse)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 
 
     @PostMapping(ADD_BOOK)
-    public HttpEntity<ApiResponse> addBook(@RequestBody BookRequest request) {
+    public HttpEntity<ApiResponse> addBook(@Valid @RequestBody BookRequest request) {
         ApiResponse book = userService.addBook(request);
         return book != null
                 ? ResponseEntity.ok(book)

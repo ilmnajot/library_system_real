@@ -2,6 +2,7 @@ package sampm.uz.library_system.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import sampm.uz.library_system.enums.Gender;
 import sampm.uz.library_system.enums.SchoolName;
 import sampm.uz.library_system.enums.Status;
 import sampm.uz.library_system.enums.StudentClass;
@@ -41,6 +42,9 @@ public class Student extends BaseLongEntity {
     private Roles role;
 
     private int numberOfBooks;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @Column(name = "role_id", insertable = false, updatable = false)
     private Long roleId;

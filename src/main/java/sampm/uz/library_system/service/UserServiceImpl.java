@@ -138,8 +138,11 @@ public class UserServiceImpl implements UserService {
             StudentBook studentBook = new StudentBook();
             studentBook.setStudent_id(studentId);
             studentBook.setBook_id(bookId);
+            studentBook.setAmount(studentBook.getAmount() + 1);
             Optional<Book> optionalBook = bookRepository.findById(bookId);
             Book book1 = optionalBook.get();
+            Student student = studentRepository.findById(studentId).get();
+            student.setNumberOfBooks(student.getNumberOfBooks() + 1);
             book1.setCount(book1.getCount() - 1);
             bookRepository.save(book1);
             StudentBook savedBookToStudent = studentBookRepository.save(studentBook);
@@ -162,38 +165,62 @@ public class UserServiceImpl implements UserService {
         }
         StudentBook studentBook = new StudentBook();
         Book book = bookRepository.findById(bookId).get();
-        if (book.getCount()-amount>=0){
-        studentBook.setAmount(amount);
-        studentBook.setStudent_id(studentId);
-        studentBook.setBook_id(bookId);
-        book.setCount(book.getCount()-amount);
-        bookRepository.save(book);
-        StudentBook savedStudentBook = studentBookRepository.save(studentBook);
-        StudentBookResponse mapped = modelMapper.map(savedStudentBook, StudentBookResponse.class);
-        return new ApiResponse("congratulations: you have taken: " + studentBook.getAmount() + " all together but only " + book.getCount() + " left these type of book", true, mapped);
-    }
-        throw new BookException("only number of books left: "+ book.getCount());
+        if (book.getCount() - amount >= 0) {
+            studentBook.setAmount(amount);
+            studentBook.setStudent_id(studentId);
+            studentBook.setBook_id(bookId);
+            book.setCount(book.getCount() - amount);
+            bookRepository.save(book);
+            StudentBook savedStudentBook = studentBookRepository.save(studentBook);
+            StudentBookResponse mapped = modelMapper.map(savedStudentBook, StudentBookResponse.class);
+            return new ApiResponse("congratulations: you have taken: " + studentBook.getAmount() + " all together but only " + book.getCount() + " left these type of book", true, mapped);
+        }
+        throw new BookException("only number of books left: " + book.getCount());
     }
 
     @Override
-    public ApiResponse returnBook(Long  studentId, StudentRequest request, Long bookId) {
+    public ApiResponse returnBook(Long studentId, Long bookId) {
         if (!studentRepository.existsById(studentId)) {
             throw new BookException("there is no such student: " + studentId);
         }
-        Optional<Student> studentByIdOrEmail = studentRepository.findStudentByIdOrEmail(studentId, request.getEmail());
-        if (studentByIdOrEmail.isEmpty()) {
-            throw new StudentException("there is no such student: " + studentId);
+        if (!bookRepository.existsById(bookId)) {
+            throw new BookException("there is no such book: " + bookId);
         }
+        StudentBook studentBook1 = studentBookRepository.findById(studentId).get();
+        studentBook1.setAmount(studentBook1.getAmount() - 1);
+        Optional<Student> optionalStudent = studentRepository.findById(studentId);
+        Student student = optionalStudent.get();
+        student.setNumberOfBooks(student.getNumberOfBooks() - 1);
         Book book = bookRepository.findById(bookId).get();
         book.setCount(book.getCount() + 1);
-        bookRepository.save(book);
-        Student student = studentByIdOrEmail.get();
         StudentBook studentBook = new StudentBook();
-        student.setNumberOfBooks(studentBook.getAmount()-1);
+        if (studentBook.getAmount()==0){
+            student.setStatus(Status.NOT_IN_DEBT);
+        } else {
+            student.setStatus(Status.DEBTOR);
+        }
         studentRepository.save(student);
+        bookRepository.save(book);
         StudentBook studentBookSaved = studentBookRepository.save(studentBook);
         StudentBookResponse studentBookResponse = modelMapper.map(studentBookSaved, StudentBookResponse.class);
         return new ApiResponse("success", true, studentBookResponse);
+    }
+
+    @Override
+    public ApiResponse graduateStudentTrue(StudentRequest request, Long studentId) {
+        Optional<Student> optionalStudent = studentRepository.findById(studentId);
+        if (optionalStudent.isPresent()) {
+            Student student = optionalStudent.get();
+            if (student.getStatus().equals(Status.NOT_IN_DEBT) || student.getNumberOfBooks() == 0) {
+                student.setGraduated(true);
+                Student savedStudent = studentRepository.save(student);
+                StudentStatusResponse studentResponse = modelMapper.map(savedStudent, StudentStatusResponse.class);
+                return new ApiResponse("successfully the student graduated!", true, studentResponse);
+            }
+            throw new BookException("student should return the book or books before graduate: and Number of books she/he should put back: " + optionalStudent.get().getNumberOfBooks() );
+
+        }
+        throw new StudentException("there is no student with the id:  + studentId");
     }
 
     public Book getBookById(Long id) {
@@ -205,7 +232,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse getAllAvailableBook(int page, int size) { // TODO: 10/16/2023 change... Exception Handler
+    public ApiResponse getAllAvailableBook(int page, int size) {
         Page<Book> books = bookRepository.findAll(PageRequest.of(page, size));
         return new ApiResponse("list of books", true, books.map(book -> modelMapper.map(book, BookResponse.class)));
     }
@@ -294,20 +321,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse updateStudent(StudentRequest request, Long id) {
-        Optional<Student> studentOptional = studentRepository.findStudentByEmailAndGraduatedFalse(request.getEmail());
+    public ApiResponse updateStudent(StudentRequest request, Long studentId) {
+        Optional<Student> studentOptional = studentRepository.findStudentByEmail(request.getEmail());
         if (studentOptional.isPresent()) {
-            Student student = studentOptional.get();
-            student.setFullName(request.getFullName());
-            student.setEmail(request.getEmail());
-            student.setPassword(passwordEncoder.encode(request.getPassword()));
-            student.setStudentGrade(request.getStudentGrade());
-            student.setSchoolName(request.getSchoolName());
-            student.setGraduated(request.isGraduated());
-            student.setStatus(request.getStatus());
-            Student savedStudent = studentRepository.save(student);
-            StudentResponse studentResponse = modelMapper.map(savedStudent, StudentResponse.class);
-            return new ApiResponse("success", true, studentResponse);
+            Optional<StudentBook> studentBook = studentBookRepository.findById(studentId);
+            if (studentBook.get().getAmount() - studentBook.get().getStudent().getNumberOfBooks() > 0) {
+                Student student = studentOptional.get();
+                student.setFullName(request.getFullName());
+                student.setEmail(request.getEmail());
+                student.setPassword(passwordEncoder.encode(request.getPassword()));
+                student.setStudentGrade(request.getStudentGrade());
+                student.setSchoolName(request.getSchoolName());
+                student.setGraduated(request.isGraduated());
+                student.setStatus(request.getStatus());
+                Student savedStudent = studentRepository.save(student);
+                StudentResponse studentResponse = modelMapper.map(savedStudent, StudentResponse.class);
+                return new ApiResponse("success", true, studentResponse);
+            }
         }
 
         throw new BookException("failed to update");

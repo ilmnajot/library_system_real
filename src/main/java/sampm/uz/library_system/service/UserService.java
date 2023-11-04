@@ -16,7 +16,7 @@ import sampm.uz.library_system.model.request.UserRequest;
      ApiResponse getAllAvailableStudent(int page, int size);
      ApiResponse getAllGraduatedStudents(int page, int size);
      ApiResponse deleteStudent(Long id);
-     ApiResponse updateStudent(StudentRequest request, Long id);
+     ApiResponse updateStudent(StudentRequest request, Long studentId);
 
      ApiResponse registerUser(UserRequest request);
 
@@ -40,6 +40,7 @@ import sampm.uz.library_system.model.request.UserRequest;
 
      ApiResponse getBooksToStudent(Long bookId, Long studentId, int amount);
 
-     ApiResponse returnBook(Long studentId, StudentRequest request, Long bookId);
+     ApiResponse returnBook(Long studentId, Long bookId);
 
+     ApiResponse graduateStudentTrue(StudentRequest request, Long studentId);
  }

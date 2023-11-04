@@ -24,6 +24,7 @@ public class Book extends BaseLongEntity {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Column(nullable = false)
     private int count;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
