@@ -13,8 +13,11 @@ import sampm.uz.library_system.model.common
 import sampm.uz.library_system.model.request.BookRequest;
 import sampm.uz.library_system.model.request.StudentRequest;
 import sampm.uz.library_system.model.request.UserRequest;
+import sampm.uz.library_system.model.response.StudentResponse;
 import sampm.uz.library_system.service.StudentService;
 import sampm.uz.library_system.service.UserService;
+
+import java.util.List;
 
 import static sampm.uz.library_system.utils.Constants.*;
 import static sampm.uz.library_system.utils.Constants.GET_ALL_BOOK;
@@ -106,6 +109,14 @@ public class UserController {
         return student != null
                 ? ResponseEntity.ok(student)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @GetMapping("student-list")
+    public ModelAndView studentList() {
+        List<StudentResponse> students = studentService.getStudents();
+        ModelAndView mav = new ModelAndView("student-list"); //html oladi
+        mav.addObject("students", students);
+        return mav;
     }
 
     @GetMapping(GET_ALL_STUDENT)

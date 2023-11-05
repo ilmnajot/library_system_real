@@ -15,7 +15,10 @@ import sampm.uz.library_system.repository.BookRepository;
 import sampm.uz.library_system.repository.StudentBookRepository;
 import sampm.uz.library_system.repository.StudentRepository;
 import sampm.uz.library_system.repository.UserRepository;
+
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService{
@@ -62,6 +65,12 @@ public class StudentServiceImpl implements StudentService{
         return new ApiResponse("here list of students", students.map(student -> modelMapper.map(student, StudentResponse.class)));
     }
         throw new BookException("not found");
+    }
+
+    @Override
+    public List<StudentResponse> getStudents() {
+        List<Student> students = studentRepository.findAll();
+        return students.stream().map(student -> modelMapper.map(student, StudentResponse.class)).collect(Collectors.toList());
     }
 
     @Override

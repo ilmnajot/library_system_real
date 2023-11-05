@@ -1,0 +1,37 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head th:fragment="headerfiles">
+    <title>Listing</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/style.css}">
+</head>
+<body>
+<div class="limiter">
+
+    <div class="container-table100">
+        <h2 style="color: aliceblue">Cars List</h2>
+
+        <div class="wrap-table100">
+            <div class="table100">
+                <table>
+                    <thead>
+                    <tr class="table100-head">
+                        <th class="column2">FullName</th>
+                        <th class="column3">School Name</th>
+                        <th class="column4">Email</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="student: ${students}">
+                        <td class="column1" th:text="${student.fullName}">
+                        <td class="column2" th:text="${student.schoolName}">
+                        <td class="column3" th:text="${student.email}">
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
