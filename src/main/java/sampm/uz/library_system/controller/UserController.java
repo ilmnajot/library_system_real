@@ -1,10 +1,13 @@
 package sampm.uz.library_system.controller;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import sampm.uz.library_system.model.common
         .ApiResponse;
 import sampm.uz.library_system.model.request.BookRequest;
@@ -16,8 +19,9 @@ import sampm.uz.library_system.service.UserService;
 import static sampm.uz.library_system.utils.Constants.*;
 import static sampm.uz.library_system.utils.Constants.GET_ALL_BOOK;
 
-@RestController
+//@RestController
 @RequestMapping("/api/users")
+@Controller
 public class UserController {
 
     private final StudentService studentService;
@@ -77,17 +81,23 @@ public class UserController {
 //    }
 
     @GetMapping("/register-student")
-    public String showStudentRegistrationForm(Model model){
-        model.addAttribute("student", new StudentRequest());
-        return "student-registration-form";
+    public ModelAndView showStudentRegistrationForm(){
+//        model.addAttribute("student", new StudentRequest());
+        ModelAndView mav = new ModelAndView("student-registration-form"); //html oladi
+        mav.addObject("student", new StudentRequest());
+        return mav;
     }
     @PostMapping("/register-student")
     public String processStudentRegistration(@ModelAttribute(name = "student") StudentRequest student){
         userService.addStudent(student);
         return "redirect:/student-login-form";
     }
-
-
+    @GetMapping("/login")
+    public ModelAndView showLoginPage(){
+        ModelAndView mav = new ModelAndView("student-login-form");
+        mav.addObject("student", new StudentRequest());
+        return mav;
+    }
 
 
     @GetMapping(GET_STUDENT)

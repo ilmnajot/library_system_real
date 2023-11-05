@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Teacher Login</title>
+    <title>Student Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: url('/static/images/login.jpg') no-repeat center center fixed;
+            background-image: url('/static/images/nature.jpg'); /* Replace with your background image URL */
             background-size: cover;
             text-align: center;
             padding: 20px;
@@ -14,7 +14,7 @@
         }
 
         .container {
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.8); /* Background color with opacity */
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             padding: 20px;
@@ -53,19 +53,19 @@
             padding: 10px;
             margin-top: 10px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s; /* Hover transition effect */
         }
 
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
 
-        .forgot-password {
+        .register-link {
             text-align: center;
             margin-top: 10px;
         }
 
-        .forgot-password a {
+        .register-link a {
             color: #007BFF;
             text-decoration: none;
         }
@@ -73,18 +73,18 @@
 </head>
 <body>
 <div class="container">
-    <h1>Teacher Login</h1>
-    <form action="/login-teacher" method="post">
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email" required>
+    <h1>Student Login</h1>
+    <form th:action="|/api/users/login|" method="post">
+        <label for="username">Username or Email:</label>
+        <input type="text" id="username" name="username" required>
 
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
 
         <input type="submit" value="Login">
     </form>
-    <div class="forgot-password">
-        <a href="/forgot-password">Forgot Password?</a>
+    <div class="register-link">
+        <p>Don't have an account? <a th:href="|/api/users/register-student|">Register</a></p>
     </div>
 </div>
 </body>

@@ -1,13 +1,12 @@
 package sampm.uz.library_system.model.request;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Data;
 import sampm.uz.library_system.entity.Book;
 import sampm.uz.library_system.entity.Roles;
-import sampm.uz.library_system.enums.RoleName;
-import sampm.uz.library_system.enums.SchoolName;
-import sampm.uz.library_system.enums.Status;
-import sampm.uz.library_system.enums.StudentClass;
+import sampm.uz.library_system.enums.*;
 
 import java.util.List;
 
@@ -21,6 +20,8 @@ public class StudentRequest {
     private String password;
 
     private StudentClass studentGrade;
+
+    private Gender gender;
 
     private SchoolName schoolName;
 

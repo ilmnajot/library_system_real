@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Student Login</title>
+    <title>Teacher Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('images/nature.jpg'); /* Replace with your background image URL */
+            background: url('/images/login.jpg') no-repeat center center fixed;
             background-size: cover;
             text-align: center;
             padding: 20px;
@@ -14,7 +14,7 @@
         }
 
         .container {
-            background-color: rgba(255, 255, 255, 0.8); /* Background color with opacity */
+            background-color: rgba(255, 255, 255, 0.8);
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             padding: 20px;
@@ -53,19 +53,19 @@
             padding: 10px;
             margin-top: 10px;
             cursor: pointer;
-            transition: background-color 0.3s; /* Hover transition effect */
+            transition: background-color 0.3s;
         }
 
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
 
-        .register-link {
+        .forgot-password {
             text-align: center;
             margin-top: 10px;
         }
 
-        .register-link a {
+        .forgot-password a {
             color: #007BFF;
             text-decoration: none;
         }
@@ -73,18 +73,18 @@
 </head>
 <body>
 <div class="container">
-    <h1>Student Login</h1>
-    <form action="/login" method="post">
-        <label for="username">Username or Email:</label>
-        <input type="text" id="username" name="username" required>
+    <h1>Teacher Login</h1>
+    <form action="/login-teacher" method="post">
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required>
 
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
 
         <input type="submit" value="Login">
     </form>
-    <div class="register-link">
-        <p>Don't have an account? <a href="/register">Register</a></p>
+    <div class="forgot-password">
+        <a href="/forgot-password">Forgot Password?</a>
     </div>
 </div>
 </body>

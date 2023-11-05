@@ -186,7 +186,9 @@ public class UserServiceImpl implements UserService {
         if (!bookRepository.existsById(bookId)) {
             throw new BookException("there is no such book: " + bookId);
         }
-        StudentBook studentBook1 = studentBookRepository.findById(studentId).get();
+        StudentBook studentBook1 = studentBookRepository.findByStudent_idAndBook_id(studentId, bookId).orElseThrow(
+                () -> new StudentException("Student Book not found") // TODO: 11/5/2023  continue logic
+        );
         studentBook1.setAmount(studentBook1.getAmount() - 1);
         Optional<Student> optionalStudent = studentRepository.findById(studentId);
         Student student = optionalStudent.get();
