@@ -265,7 +265,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse updateBook(BookRequest request, Long id) { // TODO: 10/23/2023
+    public ApiResponse updateBook(BookRequest request, Long id) {
+
+
+
+
         Optional<Book> optionalBook = bookRepository.findBookByIsbn(request.getIsbn());
         if (optionalBook.isPresent()) {
             Book book = optionalBook.get();
@@ -386,7 +390,6 @@ public class UserServiceImpl implements UserService {
         student.setPassword(passwordEncoder.encode(request.getPassword()));
         student.setStudentGrade(request.getStudentGrade());
         student.setSchoolName(SchoolName.SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI);
-//        student.setSchoolName(request.getSchoolName());
         student.setStatus(request.getStatus());
         student.setBooks(null);
         student.setRoleId(request.getRoleId());

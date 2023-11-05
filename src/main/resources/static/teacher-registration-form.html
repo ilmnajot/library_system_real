@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Teacher Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('/static/images/javier.jpg') no-repeat center center fixed;
+      background-size: cover;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.8); /* Background color with opacity */
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    form {
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    input[type="submit"] {
+      width: 100%;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s; /* Hover transition effect */
+    }
+
+    input[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .login-link a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Teacher Registration</h1>
+  <form action="/register-teacher" method="post">
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" name="firstName" required>
+
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" name="lastName" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <label for="gender">Gender:</label>
+    <select id="gender" name="gender">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+      <option value="other">Other</option>
+    </select>
+
+    <label for="qualification">Qualification:</label>
+    <input type="text" id="qualification" name="qualification" required>
+
+    <label for="experience">Years of Teaching Experience:</label>
+    <input type="text" id="experience" name="experience" required>
+
+    <label for="about">About Me:</label>
+    <textarea id="about" name="about" rows="5"></textarea>
+
+    <input type="submit" value="Register">
+  </form>
+  <div class="login-link">
+    <p>Already have an account? <a href="/teacher-login-login.html">Login</a></p>
+  </div>
+</div>
+</body>
+</html>

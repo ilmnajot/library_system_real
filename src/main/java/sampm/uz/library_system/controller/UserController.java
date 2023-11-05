@@ -1,17 +1,15 @@
 package sampm.uz.library_system.controller;
-
 import jakarta.validation.Valid;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import sampm.uz.library_system.entity.Student;
-import sampm.uz.library_system.model.common.ApiResponse;
+import sampm.uz.library_system.model.common
+        .ApiResponse;
 import sampm.uz.library_system.model.request.BookRequest;
 import sampm.uz.library_system.model.request.StudentRequest;
 import sampm.uz.library_system.model.request.UserRequest;
-import sampm.uz.library_system.model.response.StudentResponse;
 import sampm.uz.library_system.service.StudentService;
 import sampm.uz.library_system.service.UserService;
 
@@ -62,21 +60,35 @@ public class UserController {
                 ? ResponseEntity.ok(student)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
-    @GetMapping("/register")
-    public String showRegistrationForm(Model model){
+//    @GetMapping("/register")
+//    public String showRegistrationForm(Model model){
+//        model.addAttribute("student", new StudentRequest());
+//        return "registrationForm";
+//    }
+//    @PostMapping("/register")
+//    public String registerStudent(@ModelAttribute(name = "student") StudentRequest student){
+//        userService.addStudent(student);
+//        return "redirect:/registration-success";
+//    }
+//    @GetMapping("/login")
+//    public String loginStudent(@ModelAttribute(name = "student") StudentRequest student){
+//        userService.addStudent(student);
+//        return "redirect:/loginForm";
+//    }
+
+    @GetMapping("/register-student")
+    public String showStudentRegistrationForm(Model model){
         model.addAttribute("student", new StudentRequest());
-        return "registrationForm";
+        return "student-registration-form";
     }
-    @PostMapping("/register")
-    public String registerStudent(@ModelAttribute(name = "student") StudentRequest student){
+    @PostMapping("/register-student")
+    public String processStudentRegistration(@ModelAttribute(name = "student") StudentRequest student){
         userService.addStudent(student);
-        return "redirect:/registration-success";
+        return "redirect:/student-login-form";
     }
-    @PostMapping("/login")
-    public String loginStudent(@ModelAttribute(name = "student") StudentRequest student){
-        userService.addStudent(student);
-        return "redirect:/loginForm";
-    }
+
+
+
 
     @GetMapping(GET_STUDENT)
     public HttpEntity<ApiResponse> getStudent(@PathVariable Long id) {
