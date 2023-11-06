@@ -225,6 +225,12 @@ public class UserServiceImpl implements UserService {
         throw new StudentException("there is no student with the id:  + studentId");
     }
 
+    @Override
+    public ApiResponse verifyEmail(UserRequest student) {
+
+        return null;
+    }
+
     public Book getBookById(Long id) {
         Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isPresent()) {

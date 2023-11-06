@@ -1,13 +1,12 @@
 package sampm.uz.library_system.controller;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import sampm.uz.library_system.entity.User;
 import sampm.uz.library_system.model.common
         .ApiResponse;
 import sampm.uz.library_system.model.request.BookRequest;
@@ -83,6 +82,10 @@ public class UserController {
 //        return "redirect:/loginForm";
 //    }
 
+    /**
+     * student register
+     * @return "redirect:/login"
+     */
     @GetMapping("/register-student")
     public ModelAndView showStudentRegistrationForm(){
 //        model.addAttribute("student", new StudentRequest());
@@ -93,13 +96,42 @@ public class UserController {
     @PostMapping("/register-student")
     public String processStudentRegistration(@ModelAttribute(name = "student") StudentRequest student){
         userService.addStudent(student);
-        return "redirect:/student-login-form";
+        return "redirect:/student-registration-form";
     }
     @GetMapping("/login")
     public ModelAndView showLoginPage(){
         ModelAndView mav = new ModelAndView("student-login-form");
         mav.addObject("student", new StudentRequest());
         return mav;
+    }
+
+    /**
+     * teacher registration
+     * @return teacher registration
+     */
+    @GetMapping("/register-teacher")
+    public ModelAndView show1TeacherRegistrationForm(){
+//        model.addAttribute("student", new StudentRequest());
+        ModelAndView mav = new ModelAndView("teacher-registration-form"); //html oladi
+        mav.addObject("user", new User());
+        return mav;
+    }
+    @PostMapping("/register-teacher")
+    public String processTeacherRegistration(@ModelAttribute(name = "user") UserRequest teacher){
+        userService.registerUser(teacher);
+        return "redirect:/teacher-registration-form";
+    }
+    @GetMapping("/loginTeacher")
+    public ModelAndView showTeacherLoginPage(){
+        ModelAndView mav = new ModelAndView("teacher-login-form");
+        mav.addObject("user", new UserRequest());
+        return mav;
+    }
+
+    @PostMapping("/verifyEmail")
+    public String verifyEmail(@ModelAttribute(name = "verifyEmail") UserRequest student){
+        userService.verifyEmail(student);
+        return "redirect:/loginTeacher";
     }
 
 

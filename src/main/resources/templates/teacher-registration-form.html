@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: url('/images/javier.jpg') no-repeat center center fixed;
+      background: url('/templates/images/javier.jpg') no-repeat center center fixed;
       background-size: cover;
       text-align: center;
       padding: 20px;
@@ -77,24 +77,23 @@
 <body>
 <div class="container">
   <h1>Teacher Registration</h1>
-  <form action="/register-teacher" method="post">
-    <label for="firstName">First Name:</label>
-    <input type="text" id="firstName" name="firstName" required>
-
-    <label for="lastName">Last Name:</label>
-    <input type="text" id="lastName" name="lastName" required>
+  <form th:action="|/api/users/register-teacher|" th:object="${user}" th:method="post">
+    <label for="fullName">First Name:</label>
+    <input type="text" id="fullName" name="fullName" required="required" th:field="*{fullName}" placeholder="type your fullName">
 
     <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
+    <input type="email" id="email" name="email" required ="required" placeholder="email" th:field="*{email}">
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
+    <label for="workPlace">Work Place:</label>
+    <input type="text" id="workPlace" name="workPlace" th:field="*{workPlace}" required = "required" placeholder="your workplace">
 
-    <label for="gender">Gender:</label>
-    <select id="gender" name="gender">
-      <option value="male">Male</option>
-      <option value="female">Female</option>
-      <option value="other">Other</option>
+    <label for="position">Work Place:</label>
+    <input type="text" id="position" name="position" th:field="*{position}" required = "required" placeholder="your workplace">
+
+    <label for="schoolName">SchoolName:</label>
+    <select th:field="*{schoolName}"  id="schoolName" name="schoolName">
+      <option th:value="SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI">SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI</option>
+      <option th:value="TOSHKENT_SHAHRIDAGI_PREZIDENT_MAKTABI">TOSHKENT_SHAHRIDAGI_PREZIDENT_MAKTABI</option>
     </select>
 
     <label for="qualification">Qualification:</label>
@@ -103,13 +102,10 @@
     <label for="experience">Years of Teaching Experience:</label>
     <input type="text" id="experience" name="experience" required>
 
-    <label for="about">About Me:</label>
-    <textarea id="about" name="about" rows="5"></textarea>
-
     <input type="submit" value="Register">
   </form>
   <div class="login-link">
-    <p>Already have an account? <a href="/templates/teacher-login-login.htmllogin.html">Login</a></p>
+    <p>Already have an account? <a th:href="|/api/users/loginTeacher|">Login</a></p>
   </div>
 </div>
 </body>

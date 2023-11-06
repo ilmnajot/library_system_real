@@ -6,7 +6,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: url('../static/images/register.jpeg') no-repeat center center fixed;
+            background: url('/templates/images/register.jpeg') no-repeat center center fixed;
             background-size: cover;
             text-align: center;
             padding: 20px;
@@ -38,7 +38,8 @@
 
         input[type="text"],
         input[type="email"],
-        input[type="password"] {
+        input[type="password"],
+        select{
             width: 100%;
             padding: 10px;
             margin:5px 0 ;
@@ -77,13 +78,13 @@
     <h1>Student Registration</h1>
     <form th:action="|/api/users/register-student|" th:object = "${student}" th:method="post">
         <label for="fullName">fullName:</label>
-        <input type="text" id="fullName" th:field = "*{fullName}" name="fullName" required>
+        <input type="text" id="fullName" th:field = "*{fullName}" name="fullName" placeholder="type your full name" required="required">
 
         <label for="email">Email:</label>
-        <input type="email" id="email" th:field="*{email}" name="email" required>
+        <input type="email" id="email" th:field="*{email}" name="email" placeholder="type your email" required="required">
 
         <label for="password">Password:</label>
-        <input type="password" id="password" th:field="*{password}" name="password" required>
+        <input type="password" id="password" th:field="*{password}" placeholder="your password" name="password" required="required">
 
         <label for="gender">Gender:</label>
         <select th:field="*{gender}"  id="gender" name="gender">

@@ -43,4 +43,6 @@ import sampm.uz.library_system.model.request.UserRequest;
      ApiResponse returnBook(Long studentId, Long bookId);
 
      ApiResponse graduateStudentTrue(StudentRequest request, Long studentId);
+
+     ApiResponse verifyEmail(UserRequest student);
  }
