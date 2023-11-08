@@ -4,18 +4,16 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sampm.uz.library_system.entity.Student;
-import sampm.uz.library_system.exception.AuthenticationException;
 import sampm.uz.library_system.exception.StudentException;
 import sampm.uz.library_system.model.common.ApiResponse;
 import sampm.uz.library_system.model.request.LoginRequest;
 import sampm.uz.library_system.model.request.StudentRequest;
 import sampm.uz.library_system.model.response.LoginResponse;
-import sampm.uz.library_system.model.response.StudentResponse;
 import sampm.uz.library_system.repository.StudentRepository;
-import sampm.uz.library_system.security.jwt.JwtGenerator;
+import sampm.uz.library_system.jwt.JwtGenerator;
 
 import java.util.Optional;
 import java.util.Random;
@@ -27,13 +25,15 @@ public class AuthServiceImpl implements AuthService {
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
     private final JwtGenerator jwtGenerator;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthServiceImpl(ModelMapper modelMapper, StudentRepository studentRepository, MailService mailService, AuthenticationManager authenticationManager, JwtGenerator jwtGenerator) {
+    public AuthServiceImpl(ModelMapper modelMapper, StudentRepository studentRepository, MailService mailService, AuthenticationManager authenticationManager, JwtGenerator jwtGenerator, PasswordEncoder passwordEncoder) {
         this.modelMapper = modelMapper;
         this.studentRepository = studentRepository;
         this.mailService = mailService;
         this.authenticationManager = authenticationManager;
         this.jwtGenerator = jwtGenerator;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -48,10 +48,11 @@ public class AuthServiceImpl implements AuthService {
         Student student = new Student();
         student.setFullName(request.getFullName());
         student.setEmail(request.getEmail());
-        student.setPassword(request.getPassword());
+        student.setPasswords(passwordEncoder.encode(request.getPasswords()));
         student.setStudentGrade(request.getStudentGrade());
         student.setSchoolName(request.getSchoolName());
         student.setRoleId(request.getRoleId());
+        student.setGender(request.getGender());
         int randomNumber = new Random().nextInt(999999);
         student.setGmailCode(String.valueOf(randomNumber).substring(0, 4));
         mailService.sendMail(student.getEmail(), student.getGmailCode());
@@ -61,15 +62,13 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ApiResponse login(LoginRequest request) {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                request.getUsername(),
-                request.getPassword());
-        Authentication authenticated = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        Student principal = (Student) authenticated.getPrincipal();
-        String token = jwtGenerator.generateToken(principal.getEmail());
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                request.getEmail(),
+                request.getPasswords()));
+        String token = jwtGenerator.generateToken(request.getEmail());
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(token);
-        return new ApiResponse("success", loginResponse);
+        return new ApiResponse("success",true, loginResponse);
     }
     @Override
     public ApiResponse verifyUser(String email, String emailCode) {

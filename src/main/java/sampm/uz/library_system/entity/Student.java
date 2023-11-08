@@ -2,11 +2,14 @@ package sampm.uz.library_system.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import sampm.uz.library_system.enums.Gender;
-import sampm.uz.library_system.enums.SchoolName;
-import sampm.uz.library_system.enums.Status;
-import sampm.uz.library_system.enums.StudentClass;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import sampm.uz.library_system.enums.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -16,13 +19,13 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "students")
-public class Student extends BaseLongEntity {
+public class Student extends BaseLongEntity implements UserDetails {
 
     private String fullName;
 
     private String email;
 
-    private String password;
+    private String passwords;
 
     @Enumerated(EnumType.STRING)
     private StudentClass studentGrade;
@@ -37,7 +40,7 @@ public class Student extends BaseLongEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @ManyToOne
+    @OneToOne
     @Enumerated(EnumType.STRING)
     private Roles role;
 
@@ -57,6 +60,38 @@ public class Student extends BaseLongEntity {
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
     private List<Book> books;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(this.getRole().getName());
+        return Collections.singleton(simpleGrantedAuthority);
+    }
+    @Override
+    public String getPassword(){
+        return this.getPasswords();
+    }
 
+    @Override
+    public String getUsername() {
+        return this.getEmail();
+    }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
+    }
 }

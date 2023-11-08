@@ -17,7 +17,7 @@ public class StudentRequest {
 
     private String email;
 
-    private String password;
+    private String passwords;
 
     private StudentClass studentGrade;
 

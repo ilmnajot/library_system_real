@@ -347,7 +347,7 @@ public class UserServiceImpl implements UserService {
                 Student student = studentOptional.get();
                 student.setFullName(request.getFullName());
                 student.setEmail(request.getEmail());
-                student.setPassword(passwordEncoder.encode(request.getPassword()));
+                student.setPasswords(passwordEncoder.encode(request.getPasswords()));
                 student.setStudentGrade(request.getStudentGrade());
                 student.setSchoolName(request.getSchoolName());
                 student.setGraduated(request.isGraduated());
@@ -374,7 +374,7 @@ public class UserServiceImpl implements UserService {
         user.setPosition(request.getPosition());
         user.setSchoolName(request.getSchoolName());
         user.setRole(Roles.builder().name(USER).build());
-        user.setDeleted(false);
+//        user.setDeleted(false);
         User savedUser = userRepository.save(user);
         UserResponse userResponse = modelMapper.map(savedUser, UserResponse.class);
         return new ApiResponse("success", true, userResponse);
@@ -401,7 +401,7 @@ public class UserServiceImpl implements UserService {
         Student student = new Student();
         student.setFullName(request.getFullName());
         student.setEmail(request.getEmail());
-        student.setPassword(passwordEncoder.encode(request.getPassword()));
+        student.setPasswords(passwordEncoder.encode(request.getPasswords()));
         student.setStudentGrade(request.getStudentGrade());
         student.setSchoolName(SchoolName.SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI);
         student.setStatus(request.getStatus());

@@ -49,9 +49,9 @@ public class AuthController {
 
     @PostMapping(LOGIN)
     public HttpEntity<ApiResponse> login(@RequestBody LoginRequest request) {
-        ApiResponse user = authService.login(request);
-        return user != null
-                ? ResponseEntity.ok(user)
+        ApiResponse login = authService.login(request);
+        return login != null
+                ? ResponseEntity.ok(login)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }

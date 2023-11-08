@@ -30,13 +30,8 @@ public class User extends BaseLongEntity {
     @Enumerated(EnumType.STRING)
     private SchoolName schoolName;
 
-    private String gmailCode;
-
-    private boolean deleted;
-
     @ManyToOne
     private Roles role;
 
-    private boolean enabled;
 
 }

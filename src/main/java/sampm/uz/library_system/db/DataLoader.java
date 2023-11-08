@@ -86,7 +86,7 @@ public class DataLoader implements CommandLineRunner {
                             .builder()
                             .fullName("student full name")
                             .email("studentgmail@gmail.com")
-                            .password(encodedPassword)
+                            .passwords(encodedPassword)
                             .studentGrade(StudentClass.BLUE_5)
                             .schoolName(SchoolName.SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI)
                             .graduated(false)
@@ -109,7 +109,7 @@ public class DataLoader implements CommandLineRunner {
                             .workPlace("admin workplace")
                             .position("librarian")
                             .schoolName(SchoolName.SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI)
-                            .deleted(false)
+//                            .deleted(false)
                             .role(adminRole)
                             .build());
         }
@@ -122,7 +122,7 @@ public class DataLoader implements CommandLineRunner {
                         .position("position")
                         .schoolName(SchoolName.SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI)
 //                            .available(true)
-                        .deleted(false)
+//                        .deleted(false)
                         .role(dev_role)
                         .build());
 
