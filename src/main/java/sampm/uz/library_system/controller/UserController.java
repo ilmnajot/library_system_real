@@ -34,30 +34,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping(REGISTER_USER)
-    public HttpEntity<ApiResponse> registerUser(@RequestBody UserRequest request) {
-        ApiResponse user = userService.registerUser(request);
-        return user != null
-                ? ResponseEntity.ok(user)
-                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-
-    @PostMapping(VERIFY_USER)
-    public HttpEntity<ApiResponse> verifyUser(@RequestBody String emailCode) {
-        ApiResponse user = userService.verifyUser(emailCode);
-        return user != null
-                ? ResponseEntity.ok(user)
-                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-
-    @PostMapping(LOGIN)
-    public HttpEntity<ApiResponse> login(@RequestBody UserRequest request) {
-        ApiResponse user = userService.login(request);
-        return user != null
-                ? ResponseEntity.ok(user)
-                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-
 
     @PostMapping(ADD_STUDENT)
     public HttpEntity<ApiResponse> addStudent(@RequestBody StudentRequest request) {
@@ -123,6 +99,12 @@ public class UserController {
     }
     @GetMapping("/loginTeacher")
     public ModelAndView showTeacherLoginPage(){
+        ModelAndView mav = new ModelAndView("teacher-login-form");
+        mav.addObject("user", new UserRequest());
+        return mav;
+    }
+    @GetMapping("/verifyEmail")
+    public ModelAndView showVerifyEmailPage(){
         ModelAndView mav = new ModelAndView("teacher-login-form");
         mav.addObject("user", new UserRequest());
         return mav;

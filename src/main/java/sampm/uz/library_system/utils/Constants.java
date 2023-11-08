@@ -2,8 +2,10 @@ package sampm.uz.library_system.utils;
 
 public class Constants {
 
+    public final static String AUTH = "/api/auth";
     public static  final String REGISTER_USER = "/register_user";
-    public static  final String VERIFY_USER = "/verify_user";
+    public static  final String REGISTER_STUDENT = "/register_student";
+    public static  final String VERIFY_STUDENT = "/verify_student";
     public static  final String LOGIN = "/login";
     public static final String ADD_STUDENT = "/add_student";
     public static final String GET_STUDENT = "/get_student/{id}";

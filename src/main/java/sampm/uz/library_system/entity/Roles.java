@@ -5,7 +5,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.*;
+import sampm.uz.library_system.enums.Permission;
 import sampm.uz.library_system.enums.RoleName;
+
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -24,5 +27,6 @@ public class Roles extends BaseLongEntity {
 
     private boolean deleted;
 
-
+    @Enumerated(EnumType.STRING)
+    public List<Permission> permissions;
 }

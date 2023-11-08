@@ -1,4 +1,4 @@
-package sampm.uz.library_system.config;
+package sampm.uz.library_system.security.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

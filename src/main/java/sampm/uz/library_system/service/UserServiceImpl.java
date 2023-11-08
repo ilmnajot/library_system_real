@@ -231,6 +231,12 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
+    public ApiResponse registerStudent(StudentRequest request) {
+
+        return null;
+    }
+
     public Book getBookById(Long id) {
         Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isPresent()) {

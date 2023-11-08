@@ -37,7 +37,7 @@ public class Student extends BaseLongEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToOne
+    @ManyToOne
     @Enumerated(EnumType.STRING)
     private Roles role;
 
@@ -48,6 +48,8 @@ public class Student extends BaseLongEntity {
 
     @Column(name = "role_id", insertable = false, updatable = false)
     private Long roleId;
+
+    private boolean enabled;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "student_book",

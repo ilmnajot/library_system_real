@@ -92,18 +92,23 @@ public class DataLoader implements CommandLineRunner {
                             .graduated(false)
                             .status(Status.NOT_IN_DEBT)
                             .role(studentRole)
+                            .numberOfBooks(0)
+                            .gender(Gender.MALE)
+                            .roleId(1L)
+                            .enabled(true)
                             .books(null)
 //                            .books(List.of(book))
                             .build());
+            String adminPass = passwordEncoder.encode("admin-pass");
             User Admin = userRepository.save(
                     User
                             .builder()
-                            .fullName("admin full name")
+                            .fullName("admin name")
                             .email("admingmail@gmail.com")
+                            .password(adminPass)
                             .workPlace("admin workplace")
-                            .position("library")
+                            .position("librarian")
                             .schoolName(SchoolName.SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI)
-//                            .available(true)
                             .deleted(false)
                             .role(adminRole)
                             .build());
@@ -120,6 +125,7 @@ public class DataLoader implements CommandLineRunner {
                         .deleted(false)
                         .role(dev_role)
                         .build());
+
 
     }
     }

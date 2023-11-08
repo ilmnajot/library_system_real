@@ -2,7 +2,11 @@ package sampm.uz.library_system.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import sampm.uz.library_system.enums.SchoolName;
+
+import java.util.Collection;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -17,6 +21,8 @@ public class User extends BaseLongEntity {
 
     private String email;
 
+    private String password;
+
     private String workPlace;
 
     private String position;
@@ -30,5 +36,7 @@ public class User extends BaseLongEntity {
 
     @ManyToOne
     private Roles role;
+
+    private boolean enabled;
 
 }
