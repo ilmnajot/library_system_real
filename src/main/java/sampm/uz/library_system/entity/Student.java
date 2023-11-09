@@ -25,7 +25,7 @@ public class Student extends BaseLongEntity implements UserDetails {
 
     private String email;
 
-    private String passwords;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private StudentClass studentGrade;
@@ -67,7 +67,7 @@ public class Student extends BaseLongEntity implements UserDetails {
     }
     @Override
     public String getPassword(){
-        return this.getPasswords();
+        return this.getPassword();
     }
 
     @Override

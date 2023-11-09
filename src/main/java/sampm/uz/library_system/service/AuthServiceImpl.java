@@ -48,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
         Student student = new Student();
         student.setFullName(request.getFullName());
         student.setEmail(request.getEmail());
-        student.setPasswords(passwordEncoder.encode(request.getPasswords()));
+        student.setPassword(passwordEncoder.encode(request.getPasswords()));
         student.setStudentGrade(request.getStudentGrade());
         student.setSchoolName(request.getSchoolName());
         student.setRoleId(request.getRoleId());
@@ -64,7 +64,7 @@ public class AuthServiceImpl implements AuthService {
     public ApiResponse login(LoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getEmail(),
-                request.getPasswords()));
+                request.getPassword()));
         String token = jwtGenerator.generateToken(request.getEmail());
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(token);

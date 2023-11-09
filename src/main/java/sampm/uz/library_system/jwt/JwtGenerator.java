@@ -18,7 +18,7 @@ public class JwtGenerator {
 //    @Value("${jwt.secret}")
 //    private String jwtSecret;
     private final static String secretKey = "SKGHBSFKFJVBKSVJBDF,MVBFDMVNBDFMVBSVHJVBSD,JVHSF";
-    private final static long expireDateWithTime = 365 * 24 * 3600 * 1000L;
+    private final static long expireDateWithTime = 5 * 60 * 1000L; // 5 minutes for testing
 
     public String generateToken(String username) {
        try {
@@ -26,8 +26,8 @@ public class JwtGenerator {
                    .builder()
                    .setSubject(username)
                    .setIssuedAt(new Date())
-                   .setExpiration(new Date(new Date().getTime() + expireDateWithTime))
-                   .signWith(SignatureAlgorithm.ES256, secretKey)
+                   .setExpiration(new Date(System.currentTimeMillis() + expireDateWithTime))
+                   .signWith(SignatureAlgorithm.HS512, secretKey)
                    .compact();
        }catch (Exception e){
            throw new AuthenticationException("failed to sign in");

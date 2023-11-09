@@ -86,7 +86,7 @@ public class DataLoader implements CommandLineRunner {
                             .builder()
                             .fullName("student full name")
                             .email("studentgmail@gmail.com")
-                            .passwords(encodedPassword)
+                            .password(encodedPassword)
                             .studentGrade(StudentClass.BLUE_5)
                             .schoolName(SchoolName.SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI)
                             .graduated(false)
