@@ -1,8 +1,7 @@
 package sampm.uz.library_system.repository;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -25,8 +24,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findBookByBookName(String bookName);
 
 //    Page<List<Book>> findAll(Sort sort, PageRequest request);
-    List<Book> findAllByCountLessThan(int count);
+    List<Book> findAllByCountLessThan(int count, Pageable pageable);
     List<Book> findAllByCountGreaterThan(int count);
+    Page<Book> findAllByCountGreaterThan(int count, Pageable pageable);
 
     boolean existsByIdAndCountGreaterThan(Long id, int count);
     boolean existsByIdAndCountLessThan(Long id, int count);

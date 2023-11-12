@@ -4,6 +4,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import sampm.uz.library_system.model.common.ApiResponse;
 import sampm.uz.library_system.model.request.LoginRequest;
 import sampm.uz.library_system.model.request.StudentRequest;
@@ -46,7 +47,12 @@ public class AuthController {
                 ? ResponseEntity.ok(user)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
-
+    @GetMapping("/loginTeacher")
+    public ModelAndView showTeacherLoginPage(){
+        ModelAndView mav = new ModelAndView("teacher-login-form");
+        mav.addObject("user", new UserRequest());
+        return mav;
+    }
     @PostMapping(LOGIN)
     public HttpEntity<ApiResponse> login(@RequestBody LoginRequest request) {
         ApiResponse login = authService.login(request);

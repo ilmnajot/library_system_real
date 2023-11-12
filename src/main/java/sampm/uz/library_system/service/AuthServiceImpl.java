@@ -68,8 +68,9 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtGenerator.generateToken(request.getEmail());
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(token);
-        return new ApiResponse("success",true, loginResponse);
+        return new ApiResponse("success", true, loginResponse);
     }
+
     @Override
     public ApiResponse verifyUser(String email, String emailCode) {
         Optional<Student> optionalStudent = studentRepository.findStudentByEmail(email);

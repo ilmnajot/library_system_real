@@ -4,6 +4,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sampm.uz.library_system.entity.StudentBook;
 import sampm.uz.library_system.model.common.ApiResponse;
 import sampm.uz.library_system.service.StudentService;
 import sampm.uz.library_system.service.UserService;
@@ -28,6 +29,7 @@ public class StudentController {
         ApiResponse book = userService.getBook(id);
         return ResponseEntity.status(book.isSuccess() ? 200 : 409).body(book);
     }
+
     @GetMapping(SEARCH)
     public HttpEntity<ApiResponse> getBookByName(@RequestParam String bookName) {
         ApiResponse book = userService.getBookByBookName(bookName);
@@ -43,4 +45,30 @@ public class StudentController {
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
+    @GetMapping(GET_ALL_AVAILABLE_BOOK)
+    public HttpEntity<ApiResponse> getAllAvailableBook(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                       @RequestParam(name = "size", defaultValue = "9") int size) {
+        ApiResponse allDeletedBook = userService.getAllAvailableBook(page, size);
+        return allDeletedBook != null
+                ? ResponseEntity.ok(allDeletedBook)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @GetMapping(GET_ALL_NOT_AVAILABLE_BOOK)
+    public HttpEntity<ApiResponse> getAllNotAvailableBook(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                          @RequestParam(name = "size", defaultValue = "9") int size) {
+        ApiResponse allDeletedBook = userService.getAllNotAvailableBook(page, size);
+        return allDeletedBook != null
+                ? ResponseEntity.ok(allDeletedBook)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @GetMapping("/get_my_book/{studentId}")
+    public HttpEntity<ApiResponse> getMyBook(@RequestParam(name = "page", defaultValue = "0") int page,
+                                             @RequestParam(name = "size", defaultValue = "9") int size,
+                                             @PathVariable(name = "studentId") Long studentId,
+                                             @RequestBody StudentBook studentBook) {
+        ApiResponse allMyBook = userService.getAllMyBook(page, size, studentId, studentBook);
+        return ResponseEntity.status(allMyBook.isSuccess() ? 200 : 409).body(allMyBook);
+    }
 }

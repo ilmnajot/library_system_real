@@ -1,5 +1,6 @@
 package sampm.uz.library_system.service;
 
+import sampm.uz.library_system.entity.StudentBook;
 import sampm.uz.library_system.model.common.ApiResponse;
 import sampm.uz.library_system.model.request.BookRequest;
 import sampm.uz.library_system.model.request.StudentRequest;
@@ -47,4 +48,6 @@ import sampm.uz.library_system.model.request.UserRequest;
      ApiResponse verifyEmail(UserRequest student);
 
      ApiResponse registerStudent(StudentRequest request);
+
+     ApiResponse getAllMyBook(int page, int size, Long studentId, StudentBook studentBook);
  }

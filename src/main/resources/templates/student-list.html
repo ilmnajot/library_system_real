@@ -1,31 +1,110 @@
-<html xmlns:th="http://www.thymeleaf.org"
-      lang="en">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head th:fragment="headerfiles">
-    <title>Listing</title>
+    <title>Student List</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/style.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .limiter {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .container-table100 {
+            max-width: 1200px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-title {
+            color: #3498db;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .wrap-table100 {
+            overflow: auto;
+        }
+
+        .table100 {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+            transition: background-color 0.3s;
+        }
+
+        @media screen and (max-width: 768px) {
+            th, td {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            th {
+                text-align: center;
+                background-color: #3498db;
+                color: #fff;
+            }
+
+            tr {
+                margin-bottom: 10px;
+                display: block;
+            }
+
+            td {
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
 <div class="limiter">
-
     <div class="container-table100">
-        <h2 style="color: aliceblue">Cars List</h2>
-
+        <h2 class="table-title">Student List</h2>
         <div class="wrap-table100">
             <div class="table100">
                 <table>
                     <thead>
                     <tr class="table100-head">
-                        <th class="column2">FullName</th>
-                        <th class="column3">School Name</th>
-                        <th class="column4">Email</th>
+                        <th class="column1">Full Name</th>
+                        <th class="column2">School Name</th>
+                        <th class="column3">Email</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="student: ${students}">
-                        <td class="column1" th:text="${student.fullName}">
-                        <td class="column2" th:text="${student.schoolName}">
-                        <td class="column3" th:text="${student.email}">
+                    <tr th:each="student: ${students}" class="table100-body">
+                        <td class="column1" th:text="${student.fullName}"></td>
+                        <td class="column2" th:text="${student.schoolName}"></td>
+                        <td class="column3" th:text="${student.email}"></td>
                     </tr>
                     </tbody>
                 </table>

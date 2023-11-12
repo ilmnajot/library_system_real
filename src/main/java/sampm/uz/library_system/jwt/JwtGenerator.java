@@ -1,83 +1,65 @@
 package sampm.uz.library_system.jwt;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import sampm.uz.library_system.controller.UserController;
-import sampm.uz.library_system.entity.Student;
-import sampm.uz.library_system.entity.User;
 import sampm.uz.library_system.exception.AuthenticationException;
 
-import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
 public class JwtGenerator {
 
-//    @Value("${jwt.secret}")
-//    private String jwtSecret;
-    private final static String secretKey = "SKGHBSFKFJVBKSVJBDF,MVBFDMVNBDFMVBSVHJVBSD,JVHSF";
-    private final static long expireDateWithTime = 5 * 60 * 1000L; // 5 minutes for testing
+    private final static String secretKey = "SKGHBSFKFJVBKSVJBDFMVBFDMVNBDFMVBSVHJVBSDJVHSF";
+    private final static long expireTime = 5 * 5 * 60 * 1000L; // 5 minutes for testing
 
-    public String generateToken(String username) {
-       try {
-           return Jwts
-                   .builder()
-                   .setSubject(username)
-                   .setIssuedAt(new Date())
-                   .setExpiration(new Date(System.currentTimeMillis() + expireDateWithTime))
-                   .signWith(SignatureAlgorithm.HS512, secretKey)
-                   .compact();
-       }catch (Exception e){
-           throw new AuthenticationException("failed to sign in");
-       }
+    public String generateToken(String email) {
+        return Jwts
+                .builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expireTime))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
     }
 
     public boolean validateToken(String token) {
         try {
-            Claims claims = Jwts.parserBuilder()
+           Jwts
+                    .parser()
                     .setSigningKey(secretKey)
-                    .build()
                     .parseClaimsJws(token)
                     .getBody();
-            Date expirationDate = claims.getExpiration();
             Date now = new Date();
-
-            if (expirationDate.after(now)) {
-                return true; // Token is valid and not expired
-            } else {
-                throw new AuthenticationException("Token has expired");
-            }
-        } catch (ExpiredJwtException e) {
-            throw new AuthenticationException("Token has expired");
-        } catch (Exception e) {
-            return false; // Token validation failed for other reasons
+        return true;
+        }catch (Exception e) {
+            e.printStackTrace();
         }
+return false;
     }
 
-
-//    public boolean validateToken(String token) {
-//        try {
-//            Claims claims = Jwts.parserBuilder()
-//                    .setSigningKey(secretKey)
-//                    .build()
-//                    .parseClaimsJws(token)
-//                    .getBody();
-//            Date expireDate = claims.getExpiration();
-//            return expireDate.after(new Date());
+//            if (expirationDate.after(now)) {
+//                return true; // Token is valid and not expired
+//            } else {
+//                throw new AuthenticationException("Token has expired");
+//            }
+//        } catch (ExpiredJwtException e) {
+//            throw new AuthenticationException("Token has expired");
 //        } catch (Exception e) {
-//            return false;
-//        }
+//            return false; // Token validation failed for other reasons
+//
 //    }
 
     public String getUsernameFromToken(String token) {
-        return Jwts
-                .parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        try {
+            return Jwts
+                    .parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (Exception e) {
+            throw new AuthenticationException("there is a problem with parsing username from token");
+        }
 
     }
 

@@ -1,13 +1,11 @@
 package sampm.uz.library_system.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import sampm.uz.library_system.enums.Permission;
 import sampm.uz.library_system.enums.RoleName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -27,6 +25,7 @@ public class Roles extends BaseLongEntity {
 
     private boolean deleted;
 
-    @Enumerated(EnumType.STRING)
-    public List<Permission> permissions;
+//    @Enumerated(EnumType.STRING)
+//    @ElementCollection
+//    public List<Permission> permissions = new ArrayList<>();
 }

@@ -60,19 +60,21 @@ public class Student extends BaseLongEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
     private List<Book> books;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(this.getRole().getName());
         return Collections.singleton(simpleGrantedAuthority);
     }
+
     @Override
-    public String getPassword(){
-        return this.getPassword();
+    public String getPassword() {
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return this.getEmail();
+        return this.email;
     }
 
     @Override

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #3498db, #8e44ad);
+            color: #fff;
+        }
+
+        header {
+            text-align: center;
+            padding: 50px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #3498db;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+
+        .main-panels {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .main-panel {
+            flex: 1 0 48%;
+            background-color: rgba(52, 152, 219, 0.8);
+            color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .feature-card {
+            flex: 1 0 300px;
+            background-color: rgba(52, 152, 219, 0.8);
+            color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 0 10px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .feature-card:hover {
+            background-color: rgba(41, 128, 185, 0.8);
+            transform: translateY(-5px);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(52, 73, 94, 0.8);
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Welcome to the School System</h1>
+</header>
+
+<div class="container">
+    <div class="main-panels">
+        <div class="main-panel">
+            <h2>Students</h2>
+            <p>Manage student information and book returns.</p>
+            <a href="/students">Go to Students</a>
+            <h3>Explore Students</h3>
+            <div class="feature-section">
+                <div class="feature-card">
+                    <h4>Student by ID</h4>
+                    <p>Find and view details of a specific student by their ID.</p>
+                    <a href="/students/byId/{studentId}">View Student</a>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Student by Name</h4>
+                    <p>Search and view details of a student by their name.</p>
+                    <a href="/students/byName/{studentName}">Search Students</a>
+                </div>
+
+                <div class="feature-card">
+                    <h4>List of Students</h4>
+                    <p>View the complete list of all students.</p>
+                    <a href="/students/list">All Students</a>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Students to Return Books</h4>
+                    <p>Check the number of students who need to return books.</p>
+                    <a href="/students/returning">Returning Students</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-panel">
+            <h2>Books</h2>
+            <p>Explore the library catalog and manage book details.</p>
+            <a href="/books">Go to Books</a>
+            <h3>Explore Books</h3>
+            <div class="feature-section">
+                <div class="feature-card">
+                    <h4>Book by ID</h4>
+                    <p>Find and view details of a specific book by its ID.</p>
+                    <a href="/books/byId/{bookId}">View Book</a>
+                </div>
+
+                <div class="feature-card">
+                    <h4>List of Books</h4>
+                    <p>Explore the complete list of all books.</p>
+                    <a href="/books/list">All Books</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2023 School System. All rights reserved.</p>
+</footer>
+</body>
+</html>

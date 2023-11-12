@@ -237,6 +237,15 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
+    public ApiResponse getAllMyBook(int page, int size, Long studentId, StudentBook studentBook) { // TODO: 11/12/2023  is that okey?
+        if (studentBookRepository.existsById(studentId)) {
+            List<StudentBook> studentBookList = studentBookRepository.findAllByStudentIdAndAmountGreaterThan(studentId, studentBook.getAmount(), PageRequest.of(page, size));
+            return new ApiResponse("success", true, studentBookList.stream().map(studentBook1 -> modelMapper.map(studentBookList, StudentBookResponse.class)));
+        }
+        throw new StudentException("there is no student book with id " + studentId);
+    }
+
     public Book getBookById(Long id) {
         Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isPresent()) {
@@ -247,13 +256,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse getAllAvailableBook(int page, int size) {
-        Page<Book> books = bookRepository.findAll(PageRequest.of(page, size));
-        return new ApiResponse("list of books", true, books.map(book -> modelMapper.map(book, BookResponse.class)));
+        Page<Book> allByCountGreaterThan = bookRepository.findAllByCountGreaterThan(0, PageRequest.of(page, size));
+        return new ApiResponse("list of books", true, allByCountGreaterThan.map(book -> modelMapper.map(book, BookResponse.class)));
     }
 
     @Override
     public ApiResponse getAllNotAvailableBook(int page, int size) {
-        List<Book> bookPage = bookRepository.findAllByCountLessThan(1);
+        List<Book> bookPage = bookRepository.findAllByCountLessThan(1, PageRequest.of(page, size));
         if (bookPage.isEmpty()) {
             throw new BookException("there is no book");
         }
