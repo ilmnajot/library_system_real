@@ -21,5 +21,5 @@ public class BookResponse {
 
     private int count;
 
-    private StudentResponse student;
+//    private StudentResponse student;
 }

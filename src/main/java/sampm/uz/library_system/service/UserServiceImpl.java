@@ -21,6 +21,7 @@ import sampm.uz.library_system.repository.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.hibernate.cfg.AvailableSettings.USER;
@@ -238,13 +239,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse getAllMyBook(int page, int size, Long studentId, StudentBook studentBook) { // TODO: 11/12/2023  is that okey?
+    public ApiResponse getAllMyBook(int page, int size, Long studentId) { // TODO: 11/12/2023  is that okey?
         if (studentBookRepository.existsById(studentId)) {
-            List<StudentBook> studentBookList = studentBookRepository.findAllByStudentIdAndAmountGreaterThan(studentId, studentBook.getAmount(), PageRequest.of(page, size));
-            return new ApiResponse("success", true, studentBookList.stream().map(studentBook1 -> modelMapper.map(studentBookList, StudentBookResponse.class)));
+            List<Student> studentList = studentRepository.findStudentByIdAndBooksGreaterThan(studentId, 0, PageRequest.of(page, size));
+//            List<StudentBook> studentBookList =
+//                    studentRepository.findStudentByIdAndBooksGreaterThan(studentId, 0, PageRequest.of(page, size));
+            return new ApiResponse("success", true, studentList.stream()
+                    .map(studentBook1 -> modelMapper.map(studentList, MyBooks.class))
+                    .collect(Collectors.toList()));
         }
         throw new StudentException("there is no student book with id " + studentId);
     }
+
+
 
     public Book getBookById(Long id) {
         Optional<Book> optionalBook = bookRepository.findById(id);
@@ -256,8 +263,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse getAllAvailableBook(int page, int size) {
-        Page<Book> allByCountGreaterThan = bookRepository.findAllByCountGreaterThan(0, PageRequest.of(page, size));
-        return new ApiResponse("list of books", true, allByCountGreaterThan.map(book -> modelMapper.map(book, BookResponse.class)));
+        Page<Book> books = bookRepository.findAllByCountGreaterThan(0, PageRequest.of(page, size));
+        return new ApiResponse("list of books", true, books.map(book -> modelMapper.map(book, BookResponse.class)));
+    }
+    @Override
+    public ApiResponse findAll(int page, int size) {
+        Page<Book> books = bookRepository.findAll(PageRequest.of(page, size));
+        return new ApiResponse("list of books", true, books.map(book -> modelMapper.map(book, BookResponse.class)));
     }
 
     @Override
@@ -266,7 +278,9 @@ public class UserServiceImpl implements UserService {
         if (bookPage.isEmpty()) {
             throw new BookException("there is no book");
         }
-        return new ApiResponse("all deleted books", true, bookPage.stream().map(book -> modelMapper.map(book, BookResponse.class)));
+        return new ApiResponse("all deleted books", true, bookPage.stream()
+                .map(book -> modelMapper.map(book, BookResponse.class))
+                .collect(Collectors.toList()));
     }
 
     @Override
@@ -328,7 +342,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse getAllGraduatedStudents(int page, int size) {
         List<Student> students = studentRepository.findAllByGraduatedTrue(Sort.by("id"), PageRequest.of(page, size));
-        return new ApiResponse("success", true, students.stream().map(student -> modelMapper.map(student, StudentResponse.class)));
+        return new ApiResponse("success", true, students.stream()
+                .map(student -> modelMapper.map(student, StudentResponse.class))
+                .collect(Collectors.toList()));
     }
 
     @Override
@@ -426,8 +442,10 @@ public class UserServiceImpl implements UserService {
     public ApiResponse getBookByBookName(String bookName) {
         List<Book> bookList = bookRepository.findBookByBookName(bookName);
         if (bookList != null) {
-            Stream<BookResponse> responseStream = bookList.stream().map(book -> modelMapper.map(book, BookResponse.class));
-            return new ApiResponse("success", true, responseStream);
+            List<BookResponse> collect = bookList.stream()
+                    .map(book -> modelMapper.map(book, BookResponse.class))
+                    .collect(Collectors.toList());
+            return new ApiResponse("success", true, collect);
         }
         throw new BookException("the book not found");
 

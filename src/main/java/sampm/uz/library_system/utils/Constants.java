@@ -30,8 +30,8 @@ public class Constants {
     public static final String INCREASE_BOOK = "/increase_book/{bookId}";
     public static final String DECREASE_BOOK = "/decrease_book/{bookId}";
     public static final String GET_ALL_DELETED_BOOK= "/get_all_deleted_book";
-    public static final String GET_ALL_AVAILABLE_BOOK= "/get_allA_available_book";
-    public static final String GET_ALL_NOT_AVAILABLE_BOOK= "/get_all_not_availableBook";
+    public static final String GET_ALL_AVAILABLE_BOOK= "/get_all_available_book";
+    public static final String GET_ALL_NOT_AVAILABLE_BOOK= "/get_all_not_available_book";
     public static final String RETURN_BOOK = "/return_book/{studentId}/{bookId}";
 
 }

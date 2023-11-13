@@ -43,7 +43,12 @@ public class JwtFilter extends OncePerRequestFilter {
                         userDetails,userDetails.getUsername(), userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                filterChain.doFilter(request, response);
+//                filterChain.doFilter(request, response);
+                logger.info("Token successfully validated for user: {}");
+            }else {
+                logger.warn("Token validation received");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "invalid token");
+                return;
             }
 
         }

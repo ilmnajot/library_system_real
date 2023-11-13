@@ -177,7 +177,7 @@ public class UserController {
     public HttpEntity<ApiResponse> bookToStudent(@PathVariable Long bookId, @PathVariable Long studentId) {
         ApiResponse bookToStudent = userService.getBookToStudent(bookId, studentId);
         return bookToStudent != null
-                ? ResponseEntity.ok(bookToStudent)
+                ? ResponseEntity.status(HttpStatus.ACCEPTED).body(bookToStudent)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
@@ -206,7 +206,7 @@ public class UserController {
     public HttpEntity<ApiResponse> addBook(@Valid @RequestBody BookRequest request) {
         ApiResponse book = userService.addBook(request);
         return book != null
-                ? ResponseEntity.ok(book)
+                ? ResponseEntity.status(HttpStatus.CREATED).body(book)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 

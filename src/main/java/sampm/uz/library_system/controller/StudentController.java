@@ -39,7 +39,7 @@ public class StudentController {
     @GetMapping(GET_ALL_BOOK)
     public HttpEntity<ApiResponse> getAllBook(@RequestParam(name = "page", defaultValue = "0") int page,
                                               @RequestParam(name = "size", defaultValue = "9") int size) {
-        ApiResponse allBook = userService.getAllAvailableBook(page, size);
+        ApiResponse allBook = userService.findAll(page, size);
         return allBook != null
                 ? ResponseEntity.ok(allBook)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -50,7 +50,7 @@ public class StudentController {
                                                        @RequestParam(name = "size", defaultValue = "9") int size) {
         ApiResponse allDeletedBook = userService.getAllAvailableBook(page, size);
         return allDeletedBook != null
-                ? ResponseEntity.ok(allDeletedBook)
+                ? ResponseEntity.status(HttpStatus.FOUND).body(allDeletedBook)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
@@ -59,16 +59,16 @@ public class StudentController {
                                                           @RequestParam(name = "size", defaultValue = "9") int size) {
         ApiResponse allDeletedBook = userService.getAllNotAvailableBook(page, size);
         return allDeletedBook != null
-                ? ResponseEntity.ok(allDeletedBook)
+                ? ResponseEntity.status(HttpStatus.ACCEPTED).body(allDeletedBook)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @GetMapping("/get_my_book/{studentId}")
     public HttpEntity<ApiResponse> getMyBook(@RequestParam(name = "page", defaultValue = "0") int page,
                                              @RequestParam(name = "size", defaultValue = "9") int size,
-                                             @PathVariable(name = "studentId") Long studentId,
-                                             @RequestBody StudentBook studentBook) {
-        ApiResponse allMyBook = userService.getAllMyBook(page, size, studentId, studentBook);
-        return ResponseEntity.status(allMyBook.isSuccess() ? 200 : 409).body(allMyBook);
-    }
+                                             @PathVariable(name = "studentId") Long studentId) {
+        ApiResponse allMyBook = userService.getAllMyBook(page, size, studentId);
+        return allMyBook != null
+                ? ResponseEntity.status(HttpStatus.ACCEPTED).body(allMyBook)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); }
 }
