@@ -240,13 +240,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse getAllMyBook(int page, int size, Long studentId) { // TODO: 11/12/2023  is that okey?
-        if (studentBookRepository.existsById(studentId)) {
-            List<Student> studentList = studentRepository.findStudentByIdAndBooksGreaterThan(studentId, 0, PageRequest.of(page, size));
-//            List<StudentBook> studentBookList =
-//                    studentRepository.findStudentByIdAndBooksGreaterThan(studentId, 0, PageRequest.of(page, size));
-            return new ApiResponse("success", true, studentList.stream()
-                    .map(studentBook1 -> modelMapper.map(studentList, MyBooks.class))
-                    .collect(Collectors.toList()));
+        Optional<Student> optionalStudent = studentRepository.findById(studentId);
+        if (optionalStudent.isPresent()) {
+            Student student = optionalStudent.get();
+            List<Book> books = student.getBooks();
+            List<MyBooks> booksList = books.stream()
+                    .map(book -> modelMapper.map(books, MyBooks.class))
+                    .toList();
+            return new ApiResponse("success", true, booksList);
         }
         throw new StudentException("there is no student book with id " + studentId);
     }
