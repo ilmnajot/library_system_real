@@ -269,7 +269,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse findAll(int page, int size) {
         Page<Book> books = bookRepository.findAll(PageRequest.of(page, size));
-        return new ApiResponse("list of books", true, books.map(book -> modelMapper.map(book, BookResponse.class)));
+        return new ApiResponse("list of books", true, books.map(book -> modelMapper.map(book, BookResponseById.class)));
     }
 
     @Override

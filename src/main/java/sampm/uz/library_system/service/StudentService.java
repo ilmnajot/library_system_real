@@ -1,7 +1,5 @@
 package sampm.uz.library_system.service;
 
-import sampm.uz.library_system.entity.Author;
-import sampm.uz.library_system.enums.Category;
 import sampm.uz.library_system.model.request.StudentRequest;
 import sampm.uz.library_system.model.common.ApiResponse;
 
@@ -18,7 +16,7 @@ public interface StudentService {
 
     ApiResponse getBookToStudent(Long bookId , Long studentId);
 
-    ApiResponse getBooksByCategory(int page, int size, Category category);
+    ApiResponse getBooksByCategory(int page, int size, String category);
 
-    ApiResponse getBooksByAuthor(int page, int size, Author author);
+    ApiResponse getBooksByAuthor(int page, int size, Long author_id);
 }

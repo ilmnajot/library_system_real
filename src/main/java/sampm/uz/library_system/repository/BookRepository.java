@@ -1,18 +1,15 @@
 package sampm.uz.library_system.repository;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import sampm.uz.library_system.entity.Author;
 import sampm.uz.library_system.entity.Book;
-import sampm.uz.library_system.enums.Category;
 
 import java.util.List;
 import java.util.Optional;
-
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 
@@ -34,8 +31,12 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     boolean existsByIdAndCountGreaterThan(Long id, int count);
     boolean existsByIdAndCountLessThan(Long id, int count);
 
-    List<Book> findAllBooksByCategory(Category category);
-    List<Book> findAllBooksByAuthor(Author author);
+//    @Query(value = "SELECT * FROM books WHERE books.categoryName LIKE %:categoryName%", nativeQuery = true)
+//    @Query(value= "* FROM books WHERE books.categoryName LIKE ? LIMIT ? OFFSET ?");
+    @Query(value="SELECT * FROM books WHERE books.category LIKE :category", nativeQuery = true)
+    Page<Book> findAllBooksByCategory(@Param("category") String category, Pageable pageable);
+    @Query(value="SELECT * FROM books WHERE books.author_id LIKE :author_id", nativeQuery = true)
+    Page<Book> findAllBooksByAuthorId(@Param("author_id") Long author_id, Pageable pageable);
 
 //    Page<Book> findAllByCountEmpty(Sort sort, Pageable pageable);
 

@@ -14,6 +14,6 @@ public class BookException extends BaseException {
     }
     @Override
     public HttpStatus getHttpStatus() {
-        return super.getHttpStatus();
+        return httpStatus;
     }
 }

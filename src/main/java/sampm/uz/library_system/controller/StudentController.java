@@ -73,25 +73,27 @@ public class StudentController {
         ApiResponse allMyBook = userService.getAllMyBook(page, size, studentId);
         return allMyBook != null
                 ? ResponseEntity.status(HttpStatus.ACCEPTED).body(allMyBook)
-                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
     @GetMapping("/get_books_by_category")
     public HttpEntity<ApiResponse> getAllBooksByCategory(@RequestParam(name = "page", defaultValue = "0") int page,
                                                          @RequestParam(name = "size", defaultValue = "9") int size,
-                                                         @RequestParam(name = "category") Category category){
+                                                         @RequestParam(name = "categoryName") String category) {
         ApiResponse booksByCategory = studentService.getBooksByCategory(page, size, category);
         return booksByCategory != null
                 ? ResponseEntity.status(HttpStatus.FOUND).body(booksByCategory)
-                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-    @GetMapping("/get_books_by_author")
-    public HttpEntity<ApiResponse> getAllBooksByCategory(@RequestParam(name = "page", defaultValue = "0") int page,
-                                                         @RequestParam(name = "size", defaultValue = "9") int size,
-                                                         @RequestParam(name = "category") Author author){
-        ApiResponse booksByCategory = studentService.getBooksByAuthor(page, size, author);
+
+    @GetMapping("/get_books_by_author/{author_id}")
+    public HttpEntity<ApiResponse> getAllBooksByAuthor(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                       @RequestParam(name = "size", defaultValue = "9") int size,
+                                                       @PathVariable(name = "author_id") Long author_id) {
+        ApiResponse booksByCategory = studentService.getBooksByAuthor(page, size, author_id);
         return booksByCategory != null
                 ? ResponseEntity.status(HttpStatus.FOUND).body(booksByCategory)
-                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }
 

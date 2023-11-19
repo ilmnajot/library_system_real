@@ -1,44 +1,41 @@
 package sampm.uz.library_system.service;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import sampm.uz.library_system.entity.Author;
 import sampm.uz.library_system.entity.Book;
 import sampm.uz.library_system.entity.Student;
 import sampm.uz.library_system.entity.StudentBook;
-import sampm.uz.library_system.enums.Category;
 import sampm.uz.library_system.exception.BookException;
 import sampm.uz.library_system.model.request.StudentRequest;
 import sampm.uz.library_system.model.common.ApiResponse;
-import sampm.uz.library_system.model.response.BookResponse;
-import sampm.uz.library_system.model.response.StudentBookResponse;
-import sampm.uz.library_system.model.response.StudentResponse;
-import sampm.uz.library_system.repository.BookRepository;
-import sampm.uz.library_system.repository.StudentBookRepository;
-import sampm.uz.library_system.repository.StudentRepository;
-import sampm.uz.library_system.repository.UserRepository;
+import sampm.uz.library_system.model.response.*;
+import sampm.uz.library_system.repository.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import java.util.stream.Stream;
 
 @Service
-public class StudentServiceImpl implements StudentService{
+public class StudentServiceImpl implements StudentService {
 
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
+    private final AuthorRepository authorRepository;
     private final ModelMapper modelMapper;
     private final BookRepository bookRepository;
 
     private final StudentBookRepository studentBookRepository;
-    public StudentServiceImpl(UserRepository userRepository, StudentRepository studentRepository, ModelMapper modelMapper, BookRepository bookRepository, StudentBookRepository studentBookRepository) {
+
+    public StudentServiceImpl(UserRepository userRepository, StudentRepository studentRepository, AuthorRepository authorRepository, ModelMapper modelMapper, BookRepository bookRepository, StudentBookRepository studentBookRepository) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
+        this.authorRepository = authorRepository;
         this.modelMapper = modelMapper;
         this.bookRepository = bookRepository;
         this.studentBookRepository = studentBookRepository;
@@ -56,7 +53,7 @@ public class StudentServiceImpl implements StudentService{
     @Override
     public ApiResponse getStudent(Long id) {
         Optional<Student> studentOptional = studentRepository.findStudentByIdAndGraduatedFalse(id);
-        if (studentOptional.isPresent()){
+        if (studentOptional.isPresent()) {
             Student student = studentOptional.get();
             student.setGraduated(false);
             StudentResponse studentResponse = modelMapper.map(student, StudentResponse.class);
@@ -68,9 +65,9 @@ public class StudentServiceImpl implements StudentService{
     @Override
     public ApiResponse getStudents(int page, int size) {
         Page<Student> students = studentRepository.findAllByGraduatedFalse(Sort.by("id"), PageRequest.of(page, size));
-        if (students!=null){
-        return new ApiResponse("here list of students", students.map(student -> modelMapper.map(student, StudentResponse.class)));
-    }
+        if (students != null) {
+            return new ApiResponse("here list of students", students.map(student -> modelMapper.map(student, StudentResponse.class)));
+        }
         throw new BookException("not found");
     }
 
@@ -78,16 +75,16 @@ public class StudentServiceImpl implements StudentService{
     public ApiResponse getStudents() {
         List<Student> students = studentRepository.findAll();
         return new ApiResponse("success", true, students.stream().map(student -> modelMapper
-                .map(student, StudentResponse.class))
+                        .map(student, StudentResponse.class))
                 .collect(Collectors.toList()));
     }
 
     @Override
     public ApiResponse getBookToStudent(Long bookId, Long studentId) {
-        if (!bookRepository.existsById(bookId)){
+        if (!bookRepository.existsById(bookId)) {
             throw new BookException("book not found");
         }
-        if (!studentRepository.existsById(studentId)){
+        if (!studentRepository.existsById(studentId)) {
             throw new BookException("student not found");
         }
         StudentBook studentBook = new StudentBook();
@@ -96,23 +93,35 @@ public class StudentServiceImpl implements StudentService{
 
         StudentBook savedBookToStudent = studentBookRepository.save(studentBook);
         StudentBookResponse studentBookResponse = modelMapper.map(savedBookToStudent, StudentBookResponse.class);
-        return new ApiResponse("success", true,studentBookResponse);
+        return new ApiResponse("success", true, studentBookResponse);
     }
 
     @Override
-    public ApiResponse getBooksByCategory(int page, int size, Category category) {
-        List<Book> byCategory = bookRepository.findAllBooksByCategory(category);
-        if (!byCategory.isEmpty()){
-
-        return new ApiResponse("success", true, byCategory.stream().map(book -> modelMapper.map(book, Book.class)));
+    public ApiResponse getBooksByCategory(int page, int size, String category) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Book> booksByCategory = bookRepository.findAllBooksByCategory(category, pageRequest);
+        if (booksByCategory != null && booksByCategory.hasContent()){
+            List<BookResponseById> collected = booksByCategory.getContent()
+                    .stream()
+                    .map(book -> modelMapper.map(book, BookResponseById.class))
+                    .toList();
+            return new ApiResponse("success", true, collected);
         }
-        throw new BookException("there is no book available " + category);
+        throw new BookException("there is no book available with categoryName " + category, HttpStatus.NOT_FOUND);
     }
 
     @Override
-    public ApiResponse getBooksByAuthor(int page, int size, Author author) {
-        List<Book> booksByAuthor = bookRepository.findAllBooksByAuthor(author);
-        return new ApiResponse("success", true, booksByAuthor.stream().map(book -> modelMapper.map(book, BookResponse.class)));
+    public ApiResponse getBooksByAuthor(int page, int size, Long author_id) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Author> authors = authorRepository.findAllById(author_id, pageRequest);
+        if (authors!=null && authors.hasContent()) {
+            List<BookResponse> collect = authors.getContent()
+                    .stream()
+                    .map(book -> modelMapper.map(book, BookResponse.class))
+                    .toList();
+            return new ApiResponse("success", true, collect);
+        }
+        throw new BookException("there is no book available with author " + author_id, HttpStatus.NOT_FOUND);
     }
 
     @Override
