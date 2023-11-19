@@ -1,11 +1,14 @@
 package sampm.uz.library_system.repository;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import sampm.uz.library_system.entity.Author;
 import sampm.uz.library_system.entity.Book;
+import sampm.uz.library_system.enums.Category;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +33,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     boolean existsByIdAndCountGreaterThan(Long id, int count);
     boolean existsByIdAndCountLessThan(Long id, int count);
+
+    List<Book> findAllBooksByCategory(Category category);
+    List<Book> findAllBooksByAuthor(Author author);
 
 //    Page<Book> findAllByCountEmpty(Sort sort, Pageable pageable);
 

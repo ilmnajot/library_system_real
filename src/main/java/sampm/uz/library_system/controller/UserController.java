@@ -42,21 +42,6 @@ public class UserController {
                 ? ResponseEntity.ok(student)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
-//    @GetMapping("/register")
-//    public String showRegistrationForm(Model model){
-//        model.addAttribute("student", new StudentRequest());
-//        return "registrationForm";
-//    }
-//    @PostMapping("/register")
-//    public String registerStudent(@ModelAttribute(name = "student") StudentRequest student){
-//        userService.addStudent(student);
-//        return "redirect:/registration-success";
-//    }
-//    @GetMapping("/login")
-//    public String loginStudent(@ModelAttribute(name = "student") StudentRequest student){
-//        userService.addStudent(student);
-//        return "redirect:/loginForm";
-//    }
 
     /**
      * student register
@@ -127,7 +112,7 @@ public class UserController {
 
     @GetMapping("student-list")
     public ModelAndView studentList() {
-        List<StudentResponse> students = studentService.getStudents();
+        ApiResponse students = studentService.getStudents();
         ModelAndView mav = new ModelAndView("student-list"); //html oladi
         mav.addObject("students", students);
         return mav;
@@ -160,21 +145,27 @@ public class UserController {
     }
 
     @PutMapping(UPDATE_STUDENT)
-    public HttpEntity<ApiResponse> updateStudent(@RequestBody StudentRequest request, @PathVariable(name = "studentId") Long studentId) {
+    public HttpEntity<ApiResponse> updateStudent(
+            @RequestBody StudentRequest request,
+            @PathVariable(name = "studentId") Long studentId) {
         ApiResponse student = userService.updateStudent(request, studentId);
         return student != null
                 ? ResponseEntity.ok(student)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
     @PutMapping(GRADUATE_STUDENT)
-    public HttpEntity<ApiResponse> graduateTrue(@RequestBody StudentRequest request, @PathVariable(name = "studentId") Long studentId) {
+    public HttpEntity<ApiResponse> graduateTrue(
+            @RequestBody StudentRequest request,
+            @PathVariable(name = "studentId") Long studentId) {
         ApiResponse student = userService.graduateStudentTrue(request, studentId);
         return student != null
                 ? ResponseEntity.ok(student)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
     @PostMapping(BOOK_TO_STUDENT)
-    public HttpEntity<ApiResponse> bookToStudent(@PathVariable Long bookId, @PathVariable Long studentId) {
+    public HttpEntity<ApiResponse> bookToStudent(
+            @PathVariable Long bookId,
+            @PathVariable Long studentId) {
         ApiResponse bookToStudent = userService.getBookToStudent(bookId, studentId);
         return bookToStudent != null
                 ? ResponseEntity.status(HttpStatus.ACCEPTED).body(bookToStudent)
@@ -194,7 +185,9 @@ public class UserController {
     }
 
     @PostMapping(RETURN_BOOK)
-    public HttpEntity<ApiResponse> returnBook(@PathVariable Long studentId,@PathVariable Long bookId) {
+    public HttpEntity<ApiResponse> returnBook(
+            @PathVariable Long studentId,
+            @PathVariable Long bookId) {
         ApiResponse apiResponse = userService.returnBook(studentId, bookId);
         return apiResponse != null
                 ? ResponseEntity.ok(apiResponse)

@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import sampm.uz.library_system.jwt.JwtFilter;
 
 @Configuration
@@ -31,7 +32,22 @@ public class SecurityConfiguration {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+
+
+
+                .formLogin(login -> {
+                   login.loginPage("/login");
+                   login.defaultSuccessUrl("/");
+                   login.failureUrl("/login-error");
+                }
+                )
+                .logout(logout ->{
+                    logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
+                    logout.logoutSuccessUrl("/");
+                    logout.deleteCookies("/JSESSIONID");
+                    logout.invalidateHttpSession(true);
+                });
         return http.build();
     }
 }

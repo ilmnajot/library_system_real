@@ -6,7 +6,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('/templates/images/nature.jpg'); /* Replace with your background image URL */
+            background-image: url('/templates/images/student-background.jpg'); /* Replace with your background image URL */
+           background-color: #cccccc;
             background-size: cover;
             text-align: center;
             padding: 20px;
@@ -69,10 +70,18 @@
             color: #007BFF;
             text-decoration: none;
         }
+        #img{
+            width: 40%;
+            position: absolute;
+            margin-right: 50%;
+        }
     </style>
 </head>
 <body>
+<img id="img" src="images/register-student.jpg">
 <div class="container">
+    
+
     <h1>Student Login</h1>
     <form th:action="|/api/users/login|" method="post">
         <label for="username">Username or Email:</label>

@@ -5,14 +5,13 @@ import sampm.uz.library_system.entity.Author;
 import sampm.uz.library_system.entity.Book;
 import sampm.uz.library_system.enums.Category;
 
+import java.util.List;
+
 @Data
 public class MyBooks {
 
-    private Long id;
+    private int count;
 
-    private String bookName;
+    private List<Book> bookList;
 
-    private Long isbn; //13-digit code of the book
-
-    private Long authorId;
 }

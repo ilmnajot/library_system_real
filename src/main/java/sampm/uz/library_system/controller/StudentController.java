@@ -1,10 +1,13 @@
 package sampm.uz.library_system.controller;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sampm.uz.library_system.entity.StudentBook;
+import sampm.uz.library_system.entity.Author;
+import sampm.uz.library_system.entity.Book;
+import sampm.uz.library_system.enums.Category;
 import sampm.uz.library_system.model.common.ApiResponse;
 import sampm.uz.library_system.service.StudentService;
 import sampm.uz.library_system.service.UserService;
@@ -70,5 +73,25 @@ public class StudentController {
         ApiResponse allMyBook = userService.getAllMyBook(page, size, studentId);
         return allMyBook != null
                 ? ResponseEntity.status(HttpStatus.ACCEPTED).body(allMyBook)
-                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); }
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+    @GetMapping("/get_books_by_category")
+    public HttpEntity<ApiResponse> getAllBooksByCategory(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                         @RequestParam(name = "size", defaultValue = "9") int size,
+                                                         @RequestParam(name = "category") Category category){
+        ApiResponse booksByCategory = studentService.getBooksByCategory(page, size, category);
+        return booksByCategory != null
+                ? ResponseEntity.status(HttpStatus.FOUND).body(booksByCategory)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+    @GetMapping("/get_books_by_author")
+    public HttpEntity<ApiResponse> getAllBooksByCategory(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                         @RequestParam(name = "size", defaultValue = "9") int size,
+                                                         @RequestParam(name = "category") Author author){
+        ApiResponse booksByCategory = studentService.getBooksByAuthor(page, size, author);
+        return booksByCategory != null
+                ? ResponseEntity.status(HttpStatus.FOUND).body(booksByCategory)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 }
+

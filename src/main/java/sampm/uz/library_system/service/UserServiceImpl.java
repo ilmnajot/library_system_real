@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sampm.uz.library_system.entity.*;
@@ -22,7 +23,6 @@ import sampm.uz.library_system.repository.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.hibernate.cfg.AvailableSettings.USER;
 
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
             BookResponse bookResponse = modelMapper.map(savedBook, BookResponse.class);
             return new ApiResponse("this book has been incremented", true, bookResponse);
         }
-        throw new BaseException("you reach limit of book and only there are: " + book.getCount() + " existing");
+        throw new BaseException("you reach limit of book and only there are: " + book.getCount() + " existing", HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
 
     }
 
@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserService {
         if (!bookRepository.existsById(bookId)) {
             throw new BookException("book not found with id " + bookId);
         }
-        if (bookRepository.existsByIdAndCountGreaterThan(bookId, 1)) {
+        if (bookRepository.existsByIdAndCountGreaterThan(bookId, 0)) {
             StudentBook studentBook = new StudentBook();
             studentBook.setStudent_id(studentId);
             studentBook.setBook_id(bookId);
@@ -187,7 +187,7 @@ public class UserServiceImpl implements UserService {
         if (!bookRepository.existsById(bookId)) {
             throw new BookException("there is no such book: " + bookId);
         }
-        StudentBook studentBook1 = studentBookRepository.findByStudent_idAndBook_id(studentId, bookId).orElseThrow(
+        StudentBook studentBook1 = studentBookRepository.findByStudentIdAndBookId(studentId, bookId).orElseThrow(
                 () -> new StudentException("Student Book not found") // TODO: 11/5/2023  continue logic
         );
         studentBook1.setAmount(studentBook1.getAmount() - 1);
@@ -197,7 +197,7 @@ public class UserServiceImpl implements UserService {
         Book book = bookRepository.findById(bookId).get();
         book.setCount(book.getCount() + 1);
         StudentBook studentBook = new StudentBook();
-        if (studentBook.getAmount()==0){
+        if (studentBook.getAmount() == 0) {
             student.setStatus(Status.NOT_IN_DEBT);
         } else {
             student.setStatus(Status.DEBTOR);
@@ -220,7 +220,7 @@ public class UserServiceImpl implements UserService {
                 StudentStatusResponse studentResponse = modelMapper.map(savedStudent, StudentStatusResponse.class);
                 return new ApiResponse("successfully the student graduated!", true, studentResponse);
             }
-            throw new BookException("student should return the book or books before graduate: and Number of books she/he should put back: " + optionalStudent.get().getNumberOfBooks() );
+            throw new BookException("student should return the book or books before graduate: and Number of books she/he should put back: " + optionalStudent.get().getNumberOfBooks());
 
         }
         throw new StudentException("there is no student with the id:  + studentId");
@@ -240,18 +240,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse getAllMyBook(int page, int size, Long studentId) { // TODO: 11/12/2023  is that okey?
-        Optional<Student> optionalStudent = studentRepository.findById(studentId);
-        if (optionalStudent.isPresent()) {
-            Student student = optionalStudent.get();
-            List<Book> books = student.getBooks();
-            List<MyBooks> booksList = books.stream()
-                    .map(book -> modelMapper.map(books, MyBooks.class))
+        Page<StudentBook> bookPage = studentBookRepository.findAll(PageRequest.of(page, size));
+        if (!bookPage.isEmpty()) {
+            List<MyBooks> booksList = bookPage
+                    .stream()
+                    .map(book -> modelMapper.map(book, MyBooks.class))
                     .toList();
             return new ApiResponse("success", true, booksList);
         }
         throw new StudentException("there is no student book with id " + studentId);
     }
-
 
 
     public Book getBookById(Long id) {
@@ -267,10 +265,16 @@ public class UserServiceImpl implements UserService {
         Page<Book> books = bookRepository.findAllByCountGreaterThan(0, PageRequest.of(page, size));
         return new ApiResponse("list of books", true, books.map(book -> modelMapper.map(book, BookResponse.class)));
     }
+
     @Override
     public ApiResponse findAll(int page, int size) {
         Page<Book> books = bookRepository.findAll(PageRequest.of(page, size));
         return new ApiResponse("list of books", true, books.map(book -> modelMapper.map(book, BookResponse.class)));
+    }
+
+    @Override
+    public ApiResponse getBooksByCategory(int page, int size) {
+        return null;
     }
 
     @Override
@@ -304,8 +308,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse updateBook(BookRequest request, Long id) {
-
-
 
 
         Optional<Book> optionalBook = bookRepository.findBookByIsbn(request.getIsbn());

@@ -11,7 +11,8 @@ import java.util.Optional;
 @Repository
 public interface StudentBookRepository extends JpaRepository<StudentBook, Long> {
 
-    Optional<StudentBook> findByStudent_idAndBook_id(Long studentId, Long bookId);
+    Optional<StudentBook> findStudentByStudentIdAndBookId(Long student_id, Long book_id);
     List<StudentBook> findAllByStudentIdAndAmountGreaterThan(Long studentId, int amount, Pageable pageable);
 
+    Optional<StudentBook> findByStudentIdAndBookId(Long studentId, Long bookId);
 }
