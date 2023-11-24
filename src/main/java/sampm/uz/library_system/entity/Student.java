@@ -40,7 +40,7 @@ public class Student extends BaseLongEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @Enumerated(EnumType.STRING)
     private Roles role;
 

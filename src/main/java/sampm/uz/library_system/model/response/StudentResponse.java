@@ -24,5 +24,5 @@ public class StudentResponse {
 
     private Status status;
 
-    private List<BookResponse> books;
+//    private List<BookResponse> books;
 }

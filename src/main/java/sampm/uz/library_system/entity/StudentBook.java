@@ -21,10 +21,8 @@ public class StudentBook  {
     @JoinColumn(insertable = false, updatable = false)
     private Book book;
 
-    @Column(name = "student_id")
     private Long student_id;
 
-    @Column(name = "book_id")
     private Long book_id;
 
     private int amount;

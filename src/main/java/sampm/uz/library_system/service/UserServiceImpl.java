@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.hibernate.cfg.AvailableSettings.USER;
+import static sampm.uz.library_system.enums.Status.NOT_IN_DEBT;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -198,7 +199,7 @@ public class UserServiceImpl implements UserService {
         book.setCount(book.getCount() + 1);
         StudentBook studentBook = new StudentBook();
         if (studentBook.getAmount() == 0) {
-            student.setStatus(Status.NOT_IN_DEBT);
+            student.setStatus(NOT_IN_DEBT);
         } else {
             student.setStatus(Status.DEBTOR);
         }
@@ -214,7 +215,7 @@ public class UserServiceImpl implements UserService {
         Optional<Student> optionalStudent = studentRepository.findById(studentId);
         if (optionalStudent.isPresent()) {
             Student student = optionalStudent.get();
-            if (student.getStatus().equals(Status.NOT_IN_DEBT) || student.getNumberOfBooks() == 0) {
+            if (student.getStatus().equals(NOT_IN_DEBT) || student.getNumberOfBooks() == 0) {
                 student.setGraduated(true);
                 Student savedStudent = studentRepository.save(student);
                 StudentStatusResponse studentResponse = modelMapper.map(savedStudent, StudentStatusResponse.class);
@@ -351,15 +352,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse deleteStudent(Long id) {
+    public ApiResponse deleteStudent(Long id) { // TODO: 11/22/2023 no deleting data
         Optional<Student> studentOptional = studentRepository.findStudentByIdAndGraduatedFalse(id);
         if (studentOptional.isPresent()) {
-            if (studentOptional.get().getStatus().equals(Status.NOT_IN_DEBT)) {
-                Student student = studentOptional.get();
+            Student student = studentOptional.get();
+            if (student.getStatus().equals(NOT_IN_DEBT) && student.getNumberOfBooks()==0){
                 studentRepository.deleteById(id);
-                Student savedStudent = studentRepository.save(student);
-                StudentResponse studentResponse = modelMapper.map(savedStudent, StudentResponse.class);
-                return new ApiResponse("success", true, studentResponse);
+//                Student savedStudent = studentRepository.save(student);
+//                StudentResponse studentResponse = modelMapper.map(savedStudent, StudentResponse.class);
+                return new ApiResponse("success", true, "The student has been deleted with the ID: " + id);
             }
             throw new BookException("this student has to return the books he or she took back");
         }
@@ -371,11 +372,13 @@ public class UserServiceImpl implements UserService {
         Optional<Student> studentOptional = studentRepository.findStudentByEmail(request.getEmail());
         if (studentOptional.isPresent()) {
             Optional<StudentBook> studentBook = studentBookRepository.findById(studentId);
-            if (studentBook.get().getAmount() - studentBook.get().getStudent().getNumberOfBooks() > 0) {
+            StudentBook book = studentBook.get();
+            if (book.getAmount() - studentBook.get().getStudent().getNumberOfBooks() > 0) {
                 Student student = studentOptional.get();
+                student.setId(studentId);
                 student.setFullName(request.getFullName());
                 student.setEmail(request.getEmail());
-                student.setPassword(passwordEncoder.encode(request.getPasswords()));
+                student.setPassword(passwordEncoder.encode(request.getPassword()));
                 student.setStudentGrade(request.getStudentGrade());
                 student.setSchoolName(request.getSchoolName());
                 student.setGraduated(request.isGraduated());
@@ -429,7 +432,7 @@ public class UserServiceImpl implements UserService {
         Student student = new Student();
         student.setFullName(request.getFullName());
         student.setEmail(request.getEmail());
-        student.setPassword(passwordEncoder.encode(request.getPasswords()));
+        student.setPassword(passwordEncoder.encode(request.getPassword()));
         student.setStudentGrade(request.getStudentGrade());
         student.setSchoolName(SchoolName.SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI);
         student.setStatus(request.getStatus());

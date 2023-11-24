@@ -10,7 +10,7 @@ import java.util.Date;
 public class JwtGenerator {
 
     private final static String secretKey = "SKGHBSFKFJVBKSVJBDFMVBFDMVNBDFMVBSVHJVBSDJVHSF";
-    private final static long expireTime = 5 * 5 * 60 * 1000L; // 5 minutes for testing
+    private final static long expireTime = 5 * 5 * 5 * 60 * 1000L; // 5 minutes for testing
 
     public String generateToken(String email) {
         return Jwts
@@ -24,17 +24,17 @@ public class JwtGenerator {
 
     public boolean validateToken(String token) {
         try {
-           Jwts
+            Jwts
                     .parser()
                     .setSigningKey(secretKey)
                     .parseClaimsJws(token)
                     .getBody();
             Date now = new Date();
-        return true;
-        }catch (Exception e) {
+            return true;
+        } catch (Exception e) {
             e.printStackTrace();
         }
-return false;
+        return false;
     }
 
 //            if (expirationDate.after(now)) {

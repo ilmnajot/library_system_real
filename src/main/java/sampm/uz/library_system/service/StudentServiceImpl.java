@@ -111,13 +111,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ApiResponse getBooksByAuthor(int page, int size, Long author_id) {
+    public ApiResponse getBooksByAuthor(int page, int size, Long author_id) { // TODO: 11/22/2023 problem with getting my books from the database
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Author> authors = authorRepository.findAllById(author_id, pageRequest);
         if (authors!=null && authors.hasContent()) {
-            List<BookResponse> collect = authors.getContent()
+            List<BookResponseByAuthorId> collect = authors.getContent()
                     .stream()
-                    .map(book -> modelMapper.map(book, BookResponse.class))
+                    .map(book -> modelMapper.map(book, BookResponseByAuthorId.class))
                     .toList();
             return new ApiResponse("success", true, collect);
         }
