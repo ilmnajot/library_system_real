@@ -66,11 +66,11 @@ public class StudentController {
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @GetMapping("/get_my_book/{studentId}")
-    public HttpEntity<ApiResponse> getMyBook(@RequestParam(name = "page", defaultValue = "0") int page,
-                                             @RequestParam(name = "size", defaultValue = "9") int size,
-                                             @PathVariable(name = "studentId") Long studentId) {
-        ApiResponse allMyBook = userService.getAllMyBook(page, size, studentId);
+    @GetMapping("/get_my_book/{bookId}/{studentId}")
+    public HttpEntity<ApiResponse> getMyBook(
+            @PathVariable(name = "bookId") Long bookId,
+            @PathVariable(name = "studentId") Long studentId) {
+        ApiResponse allMyBook = userService.getAllMyBook(bookId, studentId);
         return allMyBook != null
                 ? ResponseEntity.status(HttpStatus.ACCEPTED).body(allMyBook)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -36,7 +36,7 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Roles dev_role = null;
         if (mode.equals("always")) {
-            Author author = authorRepository.save(
+            authorRepository.save(
                     Author
                             .builder()
                             .fullName("Author name here")
@@ -44,7 +44,7 @@ public class DataLoader implements CommandLineRunner {
                             .city("Samarkand")
                             .bookList(List.of())
                             .build());
-            Book book = bookRepository.save(
+            bookRepository.save(
                     Book
                             .builder()
                             .bookName("O'tkan kunlar")
@@ -80,8 +80,8 @@ public class DataLoader implements CommandLineRunner {
                             .build());
 
             String encodedPassword = passwordEncoder.encode("1234567890123456789012345678901");
-            List<Book> bookList = bookRepository.findAll(Sort.by("id"));
-            Student student = studentRepository.save(
+            bookRepository.findAll(Sort.by("id"));
+            studentRepository.save(
                     Student
                             .builder()
                             .fullName("student full name")
@@ -100,7 +100,7 @@ public class DataLoader implements CommandLineRunner {
 //                            .books(List.of(book))
                             .build());
             String adminPass = passwordEncoder.encode("admin-pass");
-            User Admin = userRepository.save(
+            userRepository.save(
                     User
                             .builder()
                             .fullName("admin name")
@@ -113,7 +113,7 @@ public class DataLoader implements CommandLineRunner {
                             .role(adminRole)
                             .build());
         }
-        User developer = userRepository.save(
+        userRepository.save(
                 User
                         .builder()
                         .fullName("developer full name")
@@ -128,7 +128,7 @@ public class DataLoader implements CommandLineRunner {
 
 
     }
-    }
+}
 
 
 

@@ -48,7 +48,7 @@ import sampm.uz.library_system.model.request.UserRequest;
 
      ApiResponse registerStudent(StudentRequest request);
 
-     ApiResponse getAllMyBook(int page, int size, Long studentId);
+     ApiResponse getAllMyBook(Long bookId, Long studentId);
 
      ApiResponse findAll(int page, int size);
 

@@ -240,16 +240,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse getAllMyBook(int page, int size, Long studentId) { // TODO: 11/12/2023  is that okey?
-        Page<StudentBook> bookPage = studentBookRepository.findAll(PageRequest.of(page, size));
-        if (!bookPage.isEmpty()) {
-            List<MyBooks> booksList = bookPage
-                    .stream()
-                    .map(book -> modelMapper.map(book, MyBooks.class))
-                    .toList();
-            return new ApiResponse("success", true, booksList);
+    public ApiResponse getAllMyBook(Long bookId, Long studentId) { // TODO: 11/12/2023  is that okey?
+        studentBookRepository.findByStudentIdAndBookId(bookId, studentId);
+        if (!studentRepository.existsById(studentId)) {
+            throw new BaseException("there is no student with id " + studentId);
         }
-        throw new StudentException("there is no student book with id " + studentId);
+        if (!bookRepository.existsById(bookId)) {
+            throw new BookException("there is no book with id " + bookId);
+        }
+        List<StudentBook> optionalStudentBook = studentBookRepository.findAllBookByStudentId(studentId);
+        if (!optionalStudentBook.isEmpty()) {
+            List<MyBooks> books = optionalStudentBook
+                    .stream()
+                    .map(studentBook -> modelMapper.map(optionalStudentBook, MyBooks.class))
+                    .toList();
+            return new ApiResponse("success", true, books);
+        }
+
+        throw new BookException("there is no book with id " + bookId);
     }
 
 
