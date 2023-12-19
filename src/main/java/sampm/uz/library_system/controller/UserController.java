@@ -1,4 +1,5 @@
 package sampm.uz.library_system.controller;
+
 import jakarta.validation.Valid;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -45,22 +46,25 @@ public class UserController {
 
     /**
      * student register
+     *
      * @return "redirect:/login"
      */
     @GetMapping("/register-student")
-    public ModelAndView showStudentRegistrationForm(){
+    public ModelAndView showStudentRegistrationForm() {
 //        model.addAttribute("student", new StudentRequest());
         ModelAndView mav = new ModelAndView("student-registration-form"); //html oladi
         mav.addObject("student", new StudentRequest());
         return mav;
     }
+
     @PostMapping("/register-student")
-    public String processStudentRegistration(@ModelAttribute(name = "student") StudentRequest student){
+    public String processStudentRegistration(@ModelAttribute(name = "student") StudentRequest student) {
         userService.addStudent(student);
         return "redirect:/student-registration-form";
     }
+
     @GetMapping("/login")
-    public ModelAndView showLoginPage(){
+    public ModelAndView showLoginPage() {
         ModelAndView mav = new ModelAndView("student-login-form");
         mav.addObject("student", new StudentRequest());
         return mav;
@@ -68,35 +72,39 @@ public class UserController {
 
     /**
      * teacher registration
+     *
      * @return teacher registration
      */
     @GetMapping("/register-teacher")
-    public ModelAndView show1TeacherRegistrationForm(){
+    public ModelAndView show1TeacherRegistrationForm() {
 //        model.addAttribute("student", new StudentRequest());
         ModelAndView mav = new ModelAndView("teacher-registration-form"); //html oladi
         mav.addObject("user", new User());
         return mav;
     }
+
     @PostMapping("/register-teacher")
-    public String processTeacherRegistration(@ModelAttribute(name = "user") UserRequest teacher){
+    public String processTeacherRegistration(@ModelAttribute(name = "user") UserRequest teacher) {
         userService.registerUser(teacher);
         return "redirect:/teacher-registration-form";
     }
+
     @GetMapping("/loginTeacher")
-    public ModelAndView showTeacherLoginPage(){
+    public ModelAndView showTeacherLoginPage() {
         ModelAndView mav = new ModelAndView("teacher-login-form");
         mav.addObject("user", new UserRequest());
         return mav;
     }
+
     @GetMapping("/verifyEmail")
-    public ModelAndView showVerifyEmailPage(){
+    public ModelAndView showVerifyEmailPage() {
         ModelAndView mav = new ModelAndView("teacher-login-form");
         mav.addObject("user", new UserRequest());
         return mav;
     }
 
     @PostMapping("/verifyEmail")
-    public String verifyEmail(@ModelAttribute(name = "verifyEmail") UserRequest student){
+    public String verifyEmail(@ModelAttribute(name = "verifyEmail") UserRequest student) {
         userService.verifyEmail(student);
         return "redirect:/loginTeacher";
     }
@@ -153,6 +161,7 @@ public class UserController {
                 ? ResponseEntity.ok(student)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
     @PutMapping(GRADUATE_STUDENT)
     public HttpEntity<ApiResponse> graduateTrue(
             @RequestBody StudentRequest request,
@@ -162,6 +171,7 @@ public class UserController {
                 ? ResponseEntity.ok(student)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
     @PostMapping(BOOK_TO_STUDENT)
     public HttpEntity<ApiResponse> bookToStudent(
             @PathVariable Long bookId,
@@ -285,4 +295,33 @@ public class UserController {
                 ? ResponseEntity.ok(allDeletedBook)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
+    @PostMapping(ADD_TEACHER)
+    public HttpEntity<ApiResponse> addTeacher(@RequestBody UserRequest request) {
+        ApiResponse teacher = userService.addTeacher(request);
+        return teacher != null
+                ? ResponseEntity.ok(teacher)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @GetMapping(GET_TEACHER)
+    public HttpEntity<ApiResponse> getTeacher(@PathVariable Long id) {
+        ApiResponse teacher = userService.getTeacher(id);
+        return teacher != null
+                ? ResponseEntity.ok(teacher)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @GetMapping(GET_ALL_TEACHER)
+    public HttpEntity<ApiResponse> getAllTeachers(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "9") int size){
+        ApiResponse allTeachers = userService.getAllTeachers(page, size);
+        return allTeachers!=null
+                ? ResponseEntity.status(HttpStatus.OK).body(allTeachers)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+    @DeleteMapping(DELETE_TEACHER)
+
+
 }

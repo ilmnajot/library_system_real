@@ -13,6 +13,7 @@ import sampm.uz.library_system.enums.Status;
 import sampm.uz.library_system.exception.BaseException;
 import sampm.uz.library_system.exception.BookException;
 import sampm.uz.library_system.exception.StudentException;
+import sampm.uz.library_system.exception.TeacherException;
 import sampm.uz.library_system.model.common.ApiResponse;
 import sampm.uz.library_system.model.request.BookRequest;
 import sampm.uz.library_system.model.request.StudentRequest;
@@ -317,8 +318,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse updateBook(BookRequest request, Long id) {
-
-
         Optional<Book> optionalBook = bookRepository.findBookByIsbn(request.getIsbn());
         if (optionalBook.isPresent()) {
             Book book = optionalBook.get();
@@ -348,7 +347,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse getAllAvailableStudent(int page, int size) {
         Page<Student> students = studentRepository.findAllByGraduatedFalse(Sort.by("id"), PageRequest.of(page, size));
-        return new ApiResponse("success", true, students.map(student -> modelMapper.map(student, StudentResponse.class)));
+        List<StudentResponse> responseList =
+                students
+                        .stream()
+                        .map(student -> modelMapper.map(student, StudentResponse.class))
+                        .collect(Collectors.toList());
+        return new ApiResponse("success", true, responseList);
     }
 
     @Override
@@ -464,4 +468,49 @@ public class UserServiceImpl implements UserService {
         throw new BookException("the book not found");
 
     }
+    //************TEACHER SECTION **************//
+    @Override
+    public ApiResponse addTeacher(UserRequest request) {
+        Optional<User> optionalUser = userRepository.findByFullName(request.getFullName());
+        if (optionalUser.isPresent()) {
+            throw new TeacherException("teacher is already registered", HttpStatus.ALREADY_REPORTED);
+        }
+        User user  = new User();
+        user.setFullName(request.getFullName());
+        user.setEmail(request.getEmail());
+        user.setWorkPlace(request.getWorkPlace());
+        user.setPosition(request.getPosition());
+        user.setSchoolName(SchoolName.SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI);
+        user.setRoleId(request.getRoleId());
+        User savedUser = userRepository.save(user);
+        TeacherResponse teacherResponse = modelMapper.map(savedUser, TeacherResponse.class);
+        return new ApiResponse("success", true, teacherResponse);
+
+    }
+
+    @Override
+    public ApiResponse getTeacher(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()){
+            User user = optionalUser.get();
+            TeacherResponse teacherResponse = modelMapper.map(user, TeacherResponse.class);
+            return new ApiResponse("success", true, teacherResponse);
+        }
+        throw new TeacherException("Teacher not found with id " + id, HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    public ApiResponse getAllTeachers(int page, int size) {
+        Page<User> users = userRepository.findAll(Sort.by("id"), PageRequest.of(page, size));
+        if (!users.isEmpty()) {
+            List<TeacherResponse> responseList = users
+                    .stream()
+                    .map(user -> modelMapper.map(user, TeacherResponse.class))
+                    .toList();
+            return new ApiResponse("success", true, responseList);
+        }
+        throw new TeacherException("there is no any teacher list ", HttpStatus.NOT_FOUND);
+
+    }
+
 }

@@ -18,4 +18,6 @@ public class UserRequest {
     private SchoolName schoolName;
 
     private Roles role;
+
+    private Long roleId;
 }

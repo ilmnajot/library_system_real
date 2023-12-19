@@ -1,5 +1,6 @@
 package sampm.uz.library_system.exception;
 
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 public class BaseException extends RuntimeException {

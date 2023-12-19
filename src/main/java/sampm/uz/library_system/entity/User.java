@@ -33,5 +33,8 @@ public class User extends BaseLongEntity {
     @ManyToOne
     private Roles role;
 
+    @Column(name = "role_id", insertable = false, updatable = false)
+    private Long roleId;
+
 
 }

@@ -1,0 +1,22 @@
+package com.example.enums;
+
+public enum Permissions {
+
+    //STUDENT_CONTROLLER
+    ADD_STUDENT,
+    EDIT_STUDENT,
+    DELETE_STUDENT,
+    GET_STUDENT,
+
+
+    //STUDENT_CLASS_CONTROLLER
+    ADD_STUDENT_CLASS,
+    EDIT_STUDENT_CLASS,
+    DELETE_STUDENT_CLASS,
+    GET_STUDENT_CLASS,
+
+    GET
+
+
+
+}

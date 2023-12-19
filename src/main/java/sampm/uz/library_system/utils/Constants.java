@@ -34,4 +34,15 @@ public class Constants {
     public static final String GET_ALL_NOT_AVAILABLE_BOOK= "/get_all_not_available_book";
     public static final String RETURN_BOOK = "/return_book/{studentId}/{bookId}";
 
+    //********************TEACHERS****************
+
+    public static final String ADD_TEACHER = "/add_teacher";
+    public static final String GET_TEACHER = "/get_teacher/{id}";
+    public static final String GET_ALL_TEACHER = "/get_all_teacher";
+    public static final String GET_ALL_NON_EXIST_TEACHER = "/get_all_non_exist_teacher";
+    public static final String UPDATE_TEACHER = "/update_student/{teacherId}";
+//    public static final String GRADUATE_STUDENT = "/graduate_student/{studentId}";
+    public static final String DELETE_TEACHER = "/delete_teacher/{id}";
+    public static final String BOOK_TO_TEACHER = "/book_to_teacher/{bookId}/{teacherId}";
+
 }
