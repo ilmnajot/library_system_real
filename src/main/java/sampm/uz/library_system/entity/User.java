@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import sampm.uz.library_system.enums.SchoolName;
+import sampm.uz.library_system.enums.Status;
 
 import java.util.Collection;
 
@@ -26,6 +27,9 @@ public class User extends BaseLongEntity {
     private String workPlace;
 
     private String position;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Enumerated(EnumType.STRING)
     private SchoolName schoolName;

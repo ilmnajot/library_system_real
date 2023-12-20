@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static org.hibernate.cfg.AvailableSettings.USER;
 import static sampm.uz.library_system.enums.Status.NOT_IN_DEBT;
+import static sampm.uz.library_system.enums.Status.NOT_TAKE_BOOK;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -511,6 +512,44 @@ public class UserServiceImpl implements UserService {
         }
         throw new TeacherException("there is no any teacher list ", HttpStatus.NOT_FOUND);
 
+    }
+
+    @Override
+    public ApiResponse deleteTeacher(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent() && optionalUser.get().getStatus().equals(NOT_IN_DEBT) || optionalUser.get().getStatus().equals(NOT_TAKE_BOOK)){
+            userRepository.deleteById(id);
+        return new ApiResponse("success", true, optionalUser.get());
+    }
+    throw new TeacherException("Could not find find user to delete", HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    public ApiResponse updateTeacher(Long teacherId, UserRequest request) {
+        if (userRepository.existsById(teacherId)) {
+            Optional<User> optionalUser = userRepository.findUserByEmail(request.getEmail());
+            if (optionalUser.isPresent()) {
+                User teacher = getUser(teacherId, request, optionalUser);
+                User savedTeacher = userRepository.save(teacher);
+                TeacherResponse teacherResponse = modelMapper.map(savedTeacher, TeacherResponse.class);
+                return new ApiResponse("success",true, teacherResponse);
+            }
+            throw new TeacherException("there is no teacher exists by Email", HttpStatus.CONFLICT);
+        }
+        throw new TeacherException("there is no teacher with id: " + teacherId, HttpStatus.NOT_FOUND);
+    }
+
+    private static User getUser(Long teacherId, UserRequest request, Optional<User> optionalUser) {
+        User teacher = optionalUser.get();
+        teacher.setId(teacherId);
+        teacher.setFullName(request.getFullName());
+        teacher.setEmail(request.getEmail());
+        teacher.setWorkPlace(request.getWorkPlace());
+        teacher.setPosition(request.getPosition());
+        teacher.setStatus(NOT_TAKE_BOOK);
+        teacher.setSchoolName(SchoolName.SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI);
+        teacher.setRoleId(request.getRoleId());
+        return teacher;
     }
 
 }

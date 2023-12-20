@@ -322,6 +322,20 @@ public class UserController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
     @DeleteMapping(DELETE_TEACHER)
-
+    public HttpEntity<ApiResponse> deleteTeacher(@PathVariable Long id){
+        ApiResponse teacher = userService.deleteTeacher(id);
+        return teacher != null
+                ? ResponseEntity.status(HttpStatus.OK).body(teacher)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+    @PutMapping(UPDATE_TEACHER)
+    public HttpEntity<ApiResponse> updateTeacher(
+            @PathVariable(name = "teacherId") Long teacherId,
+            @RequestBody UserRequest request){
+        ApiResponse teacher = userService.updateTeacher(teacherId, request);
+        return teacher != null
+                ? ResponseEntity.status(HttpStatus.OK).body(teacher)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 
 }

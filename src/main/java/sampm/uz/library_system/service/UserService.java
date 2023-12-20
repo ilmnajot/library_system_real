@@ -59,4 +59,8 @@ import sampm.uz.library_system.model.request.UserRequest;
      ApiResponse getTeacher(Long id);
 
      ApiResponse getAllTeachers(int page, int size);
+
+     ApiResponse deleteTeacher(Long id);
+
+     ApiResponse updateTeacher(Long teacherId, UserRequest request);
  }

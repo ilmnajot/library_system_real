@@ -40,7 +40,7 @@ public class Constants {
     public static final String GET_TEACHER = "/get_teacher/{id}";
     public static final String GET_ALL_TEACHER = "/get_all_teacher";
     public static final String GET_ALL_NON_EXIST_TEACHER = "/get_all_non_exist_teacher";
-    public static final String UPDATE_TEACHER = "/update_student/{teacherId}";
+    public static final String UPDATE_TEACHER = "/update_teacher/{teacherId}";
 //    public static final String GRADUATE_STUDENT = "/graduate_student/{studentId}";
     public static final String DELETE_TEACHER = "/delete_teacher/{id}";
     public static final String BOOK_TO_TEACHER = "/book_to_teacher/{bookId}/{teacherId}";
