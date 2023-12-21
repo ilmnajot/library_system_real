@@ -45,4 +45,6 @@ public class Constants {
     public static final String DELETE_TEACHER = "/delete_teacher/{id}";
     public static final String BOOK_TO_TEACHER = "/book_to_teacher/{bookId}/{teacherId}";
 
+    public static final String RETURN_BOOK_TEACHER = "/return_book/{teacherId}/{bookId}";
+
 }

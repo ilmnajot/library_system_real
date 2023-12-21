@@ -190,8 +190,7 @@ public class UserServiceImpl implements UserService {
         if (!bookRepository.existsById(bookId)) {
             throw new BookException("there is no such book: " + bookId);
         }
-        StudentBook studentBook1 = studentBookRepository.findByStudentIdAndBookId(studentId, bookId).orElseThrow(
-                () -> new StudentException("Student Book not found") // TODO: 11/5/2023  continue logic
+        StudentBook studentBook1 = studentBookRepository.findByStudentIdAndBookId(studentId, bookId).orElseThrow(() -> new StudentException("Student Book not found") // TODO: 11/5/2023  continue logic
         );
         studentBook1.setAmount(studentBook1.getAmount() - 1);
         Optional<Student> optionalStudent = studentRepository.findById(studentId);
@@ -539,6 +538,24 @@ public class UserServiceImpl implements UserService {
         throw new TeacherException("there is no teacher with id: " + teacherId, HttpStatus.NOT_FOUND);
     }
 
+    @Override
+    public ApiResponse returnBookByTeacher(Long teacherId, Long bookId) {
+        if (!userRepository.existsById(teacherId)) {
+            throw new TeacherException("there is no teacher with id: " +teacherId, HttpStatus.NOT_FOUND);
+        }
+        if (!bookRepository.existsById(bookId)) {
+            throw new BookException("there is no book with id: " + bookId, HttpStatus.NOT_FOUND);
+        }
+        User user = new User();
+        if (user.getBookNumber()==0 || user.getStatus().equals(NOT_IN_DEBT) || user.getStatus().equals(NOT_TAKE_BOOK)){
+
+        }
+        Optional<Book> optionalBook = bookRepository.findById(bookId);
+        Optional<User> optionalUser = userRepository.findById(teacherId);
+
+
+    }
+
     private static User getUser(Long teacherId, UserRequest request, Optional<User> optionalUser) {
         User teacher = optionalUser.get();
         teacher.setId(teacherId);
@@ -550,6 +567,10 @@ public class UserServiceImpl implements UserService {
         teacher.setSchoolName(SchoolName.SAMARQAND_SHAHRIDAGI_PREZIDENT_MAKTABI);
         teacher.setRoleId(request.getRoleId());
         return teacher;
+    }
+    public static User getStatus(String status) {
+        User user = new User();
+        if ()
     }
 
 }

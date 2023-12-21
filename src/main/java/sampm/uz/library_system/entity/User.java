@@ -28,6 +28,8 @@ public class User extends BaseLongEntity {
 
     private String position;
 
+    private int bookNumber;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 

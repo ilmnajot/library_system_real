@@ -337,5 +337,15 @@ public class UserController {
                 ? ResponseEntity.status(HttpStatus.OK).body(teacher)
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+    @PostMapping(RETURN_BOOK_TEACHER)
+    public HttpEntity<ApiResponse> returnBookByTeacher(
+            @PathVariable(name = "teacherId") Long teacherId,
+            @PathVariable Long bookId) {
+        ApiResponse apiResponse = userService.returnBookByTeacher(teacherId, bookId);
+        return apiResponse != null
+                ? ResponseEntity.status(HttpStatus.ACCEPTED).body(apiResponse)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
 
 }

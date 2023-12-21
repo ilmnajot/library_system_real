@@ -63,4 +63,6 @@ import sampm.uz.library_system.model.request.UserRequest;
      ApiResponse deleteTeacher(Long id);
 
      ApiResponse updateTeacher(Long teacherId, UserRequest request);
+
+     ApiResponse returnBookByTeacher(Long teacherId, Long bookId);
  }
